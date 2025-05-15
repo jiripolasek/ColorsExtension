@@ -11,59 +11,8 @@ using Windows.Storage.Streams;
 
 namespace JPSoftworks.ColorsExtension.Helpers;
 
-public static class BitmapStreamFactory
+internal static class BitmapStreamFactory
 {
-    /// <summary>
-    /// Creates an in-memory 20×20 bitmap stream filled with the specified solid color.
-    /// </summary>
-    /// <param name="r">Red channel (0–255).</param>
-    /// <param name="g">Green channel (0–255).</param>
-    /// <param name="b">Blue channel (0–255).</param>
-    /// <param name="width">Bitmap width in pixels. Default is 20.</param>
-    /// <param name="height">Bitmap height in pixels. Default is 20.</param>
-    /// <returns>An <see cref="IRandomAccessStream" /> containing a PNG.</returns>
-    public static async Task<IRandomAccessStream> CreateSolidColorStreamAsync(
-        byte r,
-        byte g,
-        byte b,
-        uint width = 20,
-        uint height = 20)
-    {
-        // 1. Set up an in-memory stream
-        var stream = new InMemoryRandomAccessStream();
-
-        // 2. Create a PNG encoder bound to that stream
-        var encoder = await BitmapEncoder.CreateAsync(
-            BitmapEncoder.PngEncoderId,
-            stream);
-
-        // 3. Build a BGRA8 pixel array
-        var pixels = new byte[4 * width * height];
-        for (var i = 0; i < pixels.Length; i += 4)
-        {
-            pixels[i] = b; // Blue
-            pixels[i + 1] = g; // Green
-            pixels[i + 2] = r; // Red
-            pixels[i + 3] = 255; // Alpha (opaque)
-        }
-
-        // 4. Feed the pixel data into the encoder
-        encoder.SetPixelData(
-            BitmapPixelFormat.Bgra8,
-            BitmapAlphaMode.Ignore,
-            width,
-            height,
-            96, // DPI X
-            96, // DPI Y
-            pixels);
-
-        // 5. Commit (Flush) and rewind stream to start
-        await encoder.FlushAsync();
-        stream.Seek(0);
-
-        return stream;
-    }
-
     /// <summary>
     /// Creates an in-memory bitmap stream containing a filled rounded-square
     /// of the specified solid color. CPU-drawn so it works in a headless COM server.
@@ -73,7 +22,7 @@ public static class BitmapStreamFactory
     /// <param name="b">Blue channel (0–255).</param>
     /// <param name="size">Width & height in pixels (square). Default is 20.</param>
     /// <param name="cornerRadius"> Corner radius in pixels (clamped to half of size). Default is 4. </param>
-    public static async Task<IRandomAccessStream> CreateRoundedColorStreamAsync(
+    public static async Task<IRandomAccessStream?> CreateRoundedColorStreamAsync(
         byte r,
         byte g,
         byte b,
@@ -168,7 +117,7 @@ public static class BitmapStreamFactory
             stream.Seek(0);
             return stream;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }

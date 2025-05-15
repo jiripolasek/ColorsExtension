@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using JPSoftworks.ColorsExtension.Resources;
@@ -27,20 +28,22 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
     public ColorsExtensionPage()
     {
-        this.Icon = IconHelpers.FromRelativePath("Assets\\Icons\\ColorsIcon.png");
+        this.Icon = Icons.ColorWheel;
         this.Title = Strings.Colors!;
         this.Name = Strings.Open!;
     }
 
-    protected override async Task<IListItem[]> LoadInitialItemsAsync(CancellationToken cancellationToken)
+    protected override Task<IListItem[]> LoadInitialItemsAsync(CancellationToken cancellationToken)
     {
-        return
-        [
-            new ListItem(new NoOpCommand())
-            {
-                Title = "Enter color code or name to start...", Icon = new IconInfo("\uE946")
-            }
-        ];
+        IListItem[] initialItems = [];
+
+        this.EmptyContent = new CommandItem(new NoOpCommand())
+        {
+            Icon = Icons.ColorWheelLarge,
+            Title = Strings.ColorSearchPlaceholder!
+        };
+
+        return Task.FromResult(initialItems);
     }
 
     protected override async Task<IListItem[]> SearchItemsAsync(string searchText, CancellationToken cancellationToken)
@@ -55,15 +58,15 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
             this._color = null;
         }
 
-        if (this._result == null)
+        if (this._result is not { Success: true })
         {
-            return [new ListItem(new NoOpCommand()) { Title = "Enter color code or name to start...", Icon = new IconInfo("\uE946") }];
+            this.EmptyContent = new CommandItem(new NoOpCommand())
+            {
+                Icon = Icons.ColorWheelLarge,
+                Title = Strings.ColorNotRecognized!,
+            };
 
-        }
-
-        if (!this._result.Success)
-        {
-            return [new ListItem(new NoOpCommand()) { Title = "Color not recognized", Icon = new IconInfo("\uE7BA") }];
+            return [];
         }
 
         List<ColorListItem> namedColors = [];
@@ -93,8 +96,17 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
     private static async Task<ColorListItem[]> BuildBasicGradientAsync(Unicolour baseColor)
     {
-        return await Task.WhenAll(baseColor.GenerateShades()
-            .Select(static color => ColorListItem.CreateAsync(color, color.Hsl.ToString(), 10))
+        return await Task.WhenAll(baseColor.GenerateShadesWithLightness()
+            .Select(static color => ColorListItem.CreateAsync(color.Shade, color.Shade.Hex, GetLightnessString(color.Lightness), 10))
             .ToArray());
+        
+        static string GetLightnessString(double relativeLightness)
+        {
+            if (relativeLightness == 0)
+                return "base color";
+
+            return relativeLightness > 0 ? $"{relativeLightness:P0} lighter" : $"{-relativeLightness:P0} darker";
+        }
+
     }
 }

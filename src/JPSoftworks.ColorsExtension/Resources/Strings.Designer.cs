@@ -61,6 +61,15 @@ namespace JPSoftworks.ColorsExtension.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color not recognized.
+        /// </summary>
+        internal static string ColorNotRecognized {
+            get {
+                return ResourceManager.GetString("ColorNotRecognized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Colors.
         /// </summary>
         internal static string Colors {
@@ -75,6 +84,15 @@ namespace JPSoftworks.ColorsExtension.Resources {
         internal static string Colors_Subtitle {
             get {
                 return ResourceManager.GetString("Colors_Subtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter color code or name to start....
+        /// </summary>
+        internal static string ColorSearchPlaceholder {
+            get {
+                return ResourceManager.GetString("ColorSearchPlaceholder", resourceCulture);
             }
         }
         

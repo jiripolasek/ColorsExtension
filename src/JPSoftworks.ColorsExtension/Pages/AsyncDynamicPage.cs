@@ -1,9 +1,15 @@
-﻿using System;
+﻿// ------------------------------------------------------------
+//
+// Copyright (c) Jiří Polášek. All rights reserved.
+//
+// ------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
-using Microsoft.CommandPalette.Extensions.Toolkit; // Assumed namespace
+using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
@@ -125,8 +131,8 @@ public abstract class AsyncDynamicListPage : DynamicListPage
             }
 
             var oldSource = Interlocked.Exchange(ref this._updateCancellationSource, new CancellationTokenSource());
-            oldSource?.Cancel();
-            oldSource?.Dispose();
+            await oldSource.CancelAsync();
+            oldSource.Dispose();
 
             var cancellationToken = this._updateCancellationSource.Token;
 
@@ -136,7 +142,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
             {
                 IListItem[] newItems;
 
-                if (string.IsNullOrEmpty(searchText))
+                if (string.IsNullOrWhiteSpace(searchText))
                 {
                     newItems = await this.LoadInitialItemsAsync(cancellationToken);
                 }
@@ -181,7 +187,10 @@ public abstract class AsyncDynamicListPage : DynamicListPage
 
     private void UpdateItems(IListItem[] newItems)
     {
-        if (this._isDisposed) return;
+        if (this._isDisposed)
+        {
+            return;
+        }
 
         if (ReferenceEquals(this._currentItems, newItems))
         {
@@ -204,7 +213,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
                 for (int i = 0; i < oldItems.Length; i++)
                 {
                     if (!ReferenceEquals(oldItems[i], newItems[i]) &&
-                        !string.Equals(oldItems[i]?.Title, newItems[i]?.Title, StringComparison.Ordinal))
+                        !string.Equals(oldItems[i].Title, newItems[i].Title, StringComparison.Ordinal))
                     {
                         this._currentItems = newItems;
                         itemsChanged = true;

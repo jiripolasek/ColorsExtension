@@ -126,4 +126,10 @@
   <data name="Open" xml:space="preserve">
     <value>Open</value>
   </data>
+  <data name="ColorSearchPlaceholder" xml:space="preserve">
+	  <value>Enter color code or name to start...</value>
+  </data>
+  <data name="ColorNotRecognized" xml:space="preserve">
+	  <value>Color not recognized</value>
+  </data>
 </root>
