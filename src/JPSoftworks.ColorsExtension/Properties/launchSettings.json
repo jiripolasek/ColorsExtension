@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "ColorsExtension (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "ColorsExtension (Unpackaged)": {
+      "commandName": "Project"
+    },
+    "Direct (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": false
+    }
+  }
+}
