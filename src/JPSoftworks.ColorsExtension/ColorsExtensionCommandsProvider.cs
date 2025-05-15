@@ -17,6 +17,7 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
 
     public ColorsExtensionCommandsProvider()
     {
+        this.Id = "JPSoftworks.CmdPal.ColorsExtension";
         this.DisplayName = Strings.Colors!;
         this.Icon = IconHelpers.FromRelativePath("Assets\\Icons\\ColorsIcon.png");
         this._commands =
