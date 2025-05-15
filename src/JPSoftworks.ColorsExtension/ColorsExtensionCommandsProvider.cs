@@ -5,6 +5,7 @@
 // ------------------------------------------------------------
 
 using JPSoftworks.ColorsExtension.Pages;
+using JPSoftworks.ColorsExtension.Resources;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
@@ -16,11 +17,15 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
 
     public ColorsExtensionCommandsProvider()
     {
-        this.DisplayName = "Colors";
-        this.Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        this.DisplayName = Strings.Colors!;
+        this.Icon = IconHelpers.FromRelativePath("Assets\\Icons\\ColorsIcon.png");
         this._commands =
         [
-            new CommandItem(new ColorsExtensionPage()) { Title = this.DisplayName }
+            new CommandItem(new ColorsExtensionPage())
+            {
+                Title = this.DisplayName,
+                Subtitle = Strings.Colors_Subtitle!
+            }
         ];
     }
 

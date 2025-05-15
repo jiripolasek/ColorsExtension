@@ -70,6 +70,15 @@ namespace JPSoftworks.ColorsExtension.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color visualization, conversion, and manipulation.
+        /// </summary>
+        internal static string Colors_Subtitle {
+            get {
+                return ResourceManager.GetString("Colors_Subtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         internal static string Open {

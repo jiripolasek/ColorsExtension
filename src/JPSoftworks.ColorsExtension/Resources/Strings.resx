@@ -120,6 +120,9 @@
   <data name="Colors" xml:space="preserve">
     <value>Colors</value>
   </data>
+  <data name="Colors_Subtitle" xml:space="preserve">
+    <value>Color visualization, conversion, and manipulation</value>
+  </data>
   <data name="Open" xml:space="preserve">
     <value>Open</value>
   </data>

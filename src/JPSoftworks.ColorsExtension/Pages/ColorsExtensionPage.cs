@@ -27,7 +27,7 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
     public ColorsExtensionPage()
     {
-        this.Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.small.svg");
+        this.Icon = IconHelpers.FromRelativePath("Assets\\Icons\\ColorsIcon.png");
         this.Title = Strings.Colors!;
         this.Name = Strings.Open!;
     }
