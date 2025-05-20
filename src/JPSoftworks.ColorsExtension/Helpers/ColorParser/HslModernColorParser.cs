@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -9,7 +8,7 @@ public class HslModernColorParser : IColorParser
 {
     // Matches: hsl(h s% l%) or hsl(h s% l% / a)
     // Examples: hsl(0 100% 50%), hsl(0 100% 50% / 0.5)
-    private static readonly Regex HslModernPattern = new Regex(
+    private static readonly Regex HslModernPattern = new(
         @"^hsla?\s*\(\s*(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -17,7 +16,9 @@ public class HslModernColorParser : IColorParser
     {
         var match = HslModernPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid modern HSL format: {input}");
+        }
 
         try
         {

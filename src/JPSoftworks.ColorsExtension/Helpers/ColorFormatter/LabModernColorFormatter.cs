@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Wacton.Unicolour;
 
@@ -16,6 +15,7 @@ public class LabModernColorFormatter : IColorFormatter
         var a = Math.Round(lab.A, 1);
         var b = Math.Round(lab.B, 1);
 
-        return $"lab({l.ToString(CultureInfo.InvariantCulture)}% {a.ToString(CultureInfo.InvariantCulture)} {b.ToString(CultureInfo.InvariantCulture)})";
+        return
+            $"lab({l.ToString(CultureInfo.InvariantCulture)}% {a.ToString(CultureInfo.InvariantCulture)} {b.ToString(CultureInfo.InvariantCulture)})";
     }
 }

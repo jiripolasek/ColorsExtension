@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
 public interface IColorSet
 {

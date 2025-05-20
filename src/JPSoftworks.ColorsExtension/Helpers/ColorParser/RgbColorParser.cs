@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;
@@ -8,7 +7,7 @@ public class RgbColorParser : IColorParser
 {
     // Matches: rgb(r, g, b) or rgba(r, g, b, a)
     // Examples: rgb(255, 0, 0), rgba(255, 0, 0, 0.5)
-    private static readonly Regex RgbPattern = new Regex(
+    private static readonly Regex RgbPattern = new(
         @"^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([0-9.]+))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -16,7 +15,9 @@ public class RgbColorParser : IColorParser
     {
         var match = RgbPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid RGB format: {input}");
+        }
 
         try
         {

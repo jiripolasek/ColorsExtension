@@ -21,10 +21,14 @@ public class ColorParseResult
     }
 
     public static ColorParseResult Ok(Unicolour color, ParsedColorFormat format)
-        => new ColorParseResult(true, color, format, null);
+    {
+        return new ColorParseResult(true, color, format, null);
+    }
 
     public static ColorParseResult Fail(string error)
-        => new ColorParseResult(false, null, null, error);
+    {
+        return new ColorParseResult(false, null, null, error);
+    }
 }
 
 // Base interface for color parsers

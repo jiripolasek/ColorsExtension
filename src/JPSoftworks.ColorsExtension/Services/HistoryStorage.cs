@@ -4,22 +4,18 @@
 // 
 // ------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace JPSoftworks.ColorsExtension.Services;
 
-
 /// <summary>
-/// Handles JSON-based persistence for a history list of <typeparamref name="T"/> items.
+/// Handles JSON-based persistence for a history list of <typeparamref name="T" /> items.
 /// </summary>
 public class HistoryStorage<T>
 {
-    private readonly StorageFolder _folder;
     private readonly string _fileName;
+    private readonly StorageFolder _folder;
     private readonly JsonSerializerOptions _jsonOptions;
 
     /// <param name="fileName">Filename for storing the JSON (e.g. "history.json").</param>
@@ -32,7 +28,7 @@ public class HistoryStorage<T>
     {
         this._fileName = fileName;
         this._folder = folder ?? ApplicationData.Current!.LocalFolder!;
-        this._jsonOptions = jsonOptions ?? new() { WriteIndented = false };
+        this._jsonOptions = jsonOptions ?? new JsonSerializerOptions { WriteIndented = false };
     }
 
     /// <summary>
@@ -48,7 +44,7 @@ public class HistoryStorage<T>
 
         try
         {
-            string json = await FileIO.ReadTextAsync(file);
+            var json = await FileIO.ReadTextAsync(file);
             return JsonSerializer.Deserialize<List<T>>(json, this._jsonOptions) ?? [];
         }
         catch
@@ -65,7 +61,7 @@ public class HistoryStorage<T>
         var file = await this._folder.CreateFileAsync(this._fileName,
             CreationCollisionOption.ReplaceExisting);
 
-        string json = JsonSerializer.Serialize(items, this._jsonOptions);
+        var json = JsonSerializer.Serialize(items, this._jsonOptions);
         await FileIO.WriteTextAsync(file, json);
     }
 }

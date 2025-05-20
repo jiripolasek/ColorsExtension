@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Wacton.Unicolour;
 

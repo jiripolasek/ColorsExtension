@@ -4,16 +4,10 @@
 // 
 // ------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using JPSoftworks.ColorsExtension.Resources;
-using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Wacton.Unicolour;
 
@@ -39,8 +33,7 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
         this.EmptyContent = new CommandItem(new NoOpCommand())
         {
-            Icon = Icons.ColorWheelLarge,
-            Title = Strings.ColorSearchPlaceholder!
+            Icon = Icons.ColorWheelLarge, Title = Strings.ColorSearchPlaceholder!
         };
 
         return Task.FromResult(initialItems);
@@ -62,8 +55,7 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
         {
             this.EmptyContent = new CommandItem(new NoOpCommand())
             {
-                Icon = Icons.ColorWheelLarge,
-                Title = Strings.ColorNotRecognized!,
+                Icon = Icons.ColorWheelLarge, Title = Strings.ColorNotRecognized!
             };
 
             return [];
@@ -97,16 +89,18 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
     private static async Task<ColorListItem[]> BuildBasicGradientAsync(Unicolour baseColor)
     {
         return await Task.WhenAll(baseColor.GenerateShadesWithLightness()
-            .Select(static color => ColorListItem.CreateAsync(color.Shade, color.Shade.Hex, GetLightnessString(color.Lightness), 10))
+            .Select(static color =>
+                ColorListItem.CreateAsync(color.Shade, color.Shade.Hex, GetLightnessString(color.Lightness), 10))
             .ToArray());
-        
+
         static string GetLightnessString(double relativeLightness)
         {
             if (relativeLightness == 0)
+            {
                 return "base color";
+            }
 
             return relativeLightness > 0 ? $"{relativeLightness:P0} lighter" : $"{-relativeLightness:P0} darker";
         }
-
     }
 }

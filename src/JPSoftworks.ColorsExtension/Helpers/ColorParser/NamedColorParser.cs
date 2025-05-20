@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;
@@ -22,7 +20,8 @@ public class NamedColorParser : IColorParser
         if (result.Success)
         {
             return ColorParseResult.Ok(
-                new Unicolour(ColourSpace.Rgb, result.Rgb!.Value.r / 255.0, result.Rgb!.Value.g / 255.0, result.Rgb!.Value.b / 255.0),
+                new Unicolour(ColourSpace.Rgb, result.Rgb!.Value.r / 255.0, result.Rgb!.Value.g / 255.0,
+                    result.Rgb!.Value.b / 255.0),
                 ParsedColorFormat.NamedColor
             );
         }

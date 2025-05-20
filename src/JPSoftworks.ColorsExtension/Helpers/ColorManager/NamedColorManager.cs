@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
 public class NamedColorManager
 {
@@ -81,7 +78,10 @@ public class NamedColorManager
 
                     // Cache the result
                     if (this._reverseCache == null)
+                    {
                         this._reverseCache = new Dictionary<(int, int, int), NamedColorResult>();
+                    }
+
                     this._reverseCache[(r, g, b)] = result;
 
                     return result;
@@ -96,7 +96,7 @@ public class NamedColorManager
     public NamedColorResult GetClosestNamedColor(int r, int g, int b)
     {
         NamedColorResult? closest = null;
-        double minDistance = double.MaxValue;
+        var minDistance = double.MaxValue;
 
         foreach (var colorSet in this._colorSets)
         {

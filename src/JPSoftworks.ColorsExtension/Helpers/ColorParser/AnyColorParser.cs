@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Wacton.Unicolour;
+﻿using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;
 
@@ -38,7 +35,9 @@ public class AnyColorParser
     public ColorParseResult Parse(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
+        {
             return ColorParseResult.Fail("Input cannot be empty");
+        }
 
         var errors = new List<string>();
 
@@ -46,7 +45,9 @@ public class AnyColorParser
         {
             var result = parser.TryParse(input);
             if (result.Success)
+            {
                 return result;
+            }
 
             errors.Add(result.Error!);
         }
@@ -59,7 +60,9 @@ public class AnyColorParser
     {
         var result = this.Parse(input);
         if (!result.Success)
+        {
             throw new FormatException(result.Error);
+        }
 
         return result.Color!;
     }

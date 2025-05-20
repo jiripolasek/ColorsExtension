@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -9,7 +8,7 @@ public class HwbModernColorParser : IColorParser
 {
     // Matches: hwb(h w% b%) or hwb(h w% b% / a)
     // Examples: hwb(0 0% 0%), hwb(0 0% 0% / 0.5)
-    private static readonly Regex HwbPattern = new Regex(
+    private static readonly Regex HwbPattern = new(
         @"^hwb\s*\(\s*(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -17,7 +16,9 @@ public class HwbModernColorParser : IColorParser
     {
         var match = HwbPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid HWB format: {input}");
+        }
 
         try
         {

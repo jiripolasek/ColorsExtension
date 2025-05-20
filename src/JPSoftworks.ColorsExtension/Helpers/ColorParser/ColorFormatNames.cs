@@ -4,8 +4,6 @@
 // 
 // ------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;
 
 internal static class ColorFormatNames
@@ -28,6 +26,24 @@ internal static class ColorFormatNames
         { ParsedColorFormat.NamedColor, "Named" }
     };
 
+    // Alternative display names for when you want shorter labels
+    private static readonly Dictionary<ParsedColorFormat, string> ShortNames = new()
+    {
+        { ParsedColorFormat.HexShort, "Hex3" },
+        { ParsedColorFormat.HexLong, "Hex6" },
+        { ParsedColorFormat.HexWithoutHash, "Hex" },
+        { ParsedColorFormat.Rgb, "RGB" },
+        { ParsedColorFormat.RgbModern, "RGB4" },
+        { ParsedColorFormat.RgbPlain, "Plain" },
+        { ParsedColorFormat.Hsl, "HSL" },
+        { ParsedColorFormat.HslModern, "HSL4" },
+        { ParsedColorFormat.Hsv, "HSV" },
+        { ParsedColorFormat.HwbModern, "HWB" },
+        { ParsedColorFormat.LabModern, "LAB" },
+        { ParsedColorFormat.LchModern, "LCH" },
+        { ParsedColorFormat.NamedColor, "Name" }
+    };
+
     // Get the user-friendly name for a format
     public static string GetName(ParsedColorFormat format)
     {
@@ -46,24 +62,6 @@ internal static class ColorFormatNames
     {
         return FormatNames;
     }
-
-    // Alternative display names for when you want shorter labels
-    private static readonly Dictionary<ParsedColorFormat, string> ShortNames = new Dictionary<ParsedColorFormat, string>
-    {
-        { ParsedColorFormat.HexShort, "Hex3" },
-        { ParsedColorFormat.HexLong, "Hex6" },
-        { ParsedColorFormat.HexWithoutHash, "Hex" },
-        { ParsedColorFormat.Rgb, "RGB" },
-        { ParsedColorFormat.RgbModern, "RGB4" },
-        { ParsedColorFormat.RgbPlain, "Plain" },
-        { ParsedColorFormat.Hsl, "HSL" },
-        { ParsedColorFormat.HslModern, "HSL4" },
-        { ParsedColorFormat.Hsv, "HSV" },
-        { ParsedColorFormat.HwbModern, "HWB" },
-        { ParsedColorFormat.LabModern, "LAB" },
-        { ParsedColorFormat.LchModern, "LCH" },
-        { ParsedColorFormat.NamedColor, "Name" }
-    };
 
     // Get the short name for a format
     public static string GetShortName(ParsedColorFormat format)

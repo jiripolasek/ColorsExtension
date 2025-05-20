@@ -5,6 +5,6 @@ namespace JPSoftworks.ColorsExtension.Helpers.ColorFormatter;
 
 public interface IColorFormatter
 {
-    string Format(Unicolour color);
     ParsedColorFormat TargetFormat { get; }
+    string Format(Unicolour color);
 }

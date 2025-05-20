@@ -4,20 +4,20 @@
 // 
 // ------------------------------------------------------------
 
-using System.Threading.Tasks;
+using Windows.Storage.Streams;
+using Windows.System;
 using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorFormatter;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Wacton.Unicolour;
-using Windows.Storage.Streams;
-using Windows.System;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class ColorListItem : ListItem
 {
-    private ColorListItem(Unicolour color, ParsedColorFormat format, IRandomAccessStream? iconStream) : base(new NoOpCommand())
+    private ColorListItem(Unicolour color, ParsedColorFormat format, IRandomAccessStream? iconStream) : base(
+        new NoOpCommand())
     {
         var c = new AnyColorFormatter();
 
@@ -35,7 +35,8 @@ internal sealed partial class ColorListItem : ListItem
         ];
     }
 
-    private ColorListItem(Unicolour color, string text, string? subtitle, IRandomAccessStream? iconStream) : base(new CopyTextCommand(text))
+    private ColorListItem(Unicolour color, string text, string? subtitle, IRandomAccessStream? iconStream) : base(
+        new CopyTextCommand(text))
     {
         this.Title = text;
         this.Subtitle = subtitle ?? "HSL: " + color.GetRepresentation(ColourSpace.Hsl);
@@ -50,7 +51,11 @@ internal sealed partial class ColorListItem : ListItem
         ];
     }
 
-    public static async Task<ColorListItem> CreateAsync(Unicolour color, string title, string? subtitle = null, int r = 4)
+    public static async Task<ColorListItem> CreateAsync(
+        Unicolour color,
+        string title,
+        string? subtitle = null,
+        int r = 4)
     {
         var stream = await BitmapStreamFactory.CreateRoundedColorStreamAsync((byte)color.Rgb.Byte255.R,
             (byte)color.Rgb.Byte255.G, (byte)color.Rgb.Byte255.B, 20, r);
@@ -59,7 +64,8 @@ internal sealed partial class ColorListItem : ListItem
 
     public static async Task<ColorListItem> CreateAsync(Unicolour color, ParsedColorFormat format, int r = 4)
     {
-        var stream = await BitmapStreamFactory.CreateRoundedColorStreamAsync((byte)color.Rgb.Byte255.R, (byte)color.Rgb.Byte255.G, (byte)color.Rgb.Byte255.B, 20, r);
+        var stream = await BitmapStreamFactory.CreateRoundedColorStreamAsync((byte)color.Rgb.Byte255.R,
+            (byte)color.Rgb.Byte255.G, (byte)color.Rgb.Byte255.B, 20, r);
         return new ColorListItem(color, format, stream);
     }
 }

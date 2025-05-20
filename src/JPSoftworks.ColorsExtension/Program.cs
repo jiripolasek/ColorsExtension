@@ -4,12 +4,6 @@
 // 
 // ------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using JPSoftworks.CommandPalette.Extensions.Toolkit.Helpers;
-using JPSoftworks.CommandPalette.Extensions.Toolkit.Logging;
-using Microsoft.CommandPalette.Extensions;
 using Shmuelie.WinRTServer;
 using Shmuelie.WinRTServer.CsWinRT;
 

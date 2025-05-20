@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -12,17 +11,21 @@ public class RgbPlainColorParser : IColorParser
     private static readonly Regex[] Patterns =
     [
         // Comma-separated with spaces
-        new(@"^(\d+(?:\.\d+)?%?)\s*,\s*(\d+(?:\.\d+)?%?)\s*,\s*(\d+(?:\.\d+)?%?)(?:\s*,\s*(\d+(?:\.\d+)?%?))?\s*$", RegexOptions.Compiled),
-        
+        new(@"^(\d+(?:\.\d+)?%?)\s*,\s*(\d+(?:\.\d+)?%?)\s*,\s*(\d+(?:\.\d+)?%?)(?:\s*,\s*(\d+(?:\.\d+)?%?))?\s*$",
+            RegexOptions.Compiled),
+
         // Space-separated with optional slash for alpha
-        new(@"^(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?%?)(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$", RegexOptions.Compiled)
+        new(@"^(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?%?)(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$",
+            RegexOptions.Compiled)
     ];
 
     public ColorParseResult TryParse(string input)
     {
         // Skip if it looks like a function call
         if (input.Contains("(", StringComparison.InvariantCultureIgnoreCase))
+        {
             return ColorParseResult.Fail($"Not a plain RGB format: {input}");
+        }
 
         foreach (var pattern in Patterns)
         {
@@ -36,7 +39,7 @@ public class RgbPlainColorParser : IColorParser
                     var b = ParseValueOrPercentage(match.Groups[3].Value, 255);
 
                     // Alpha is parsed but ignored for now as requested
-                    return ColorParseResult.Ok(new(ColourSpace.Rgb, r, g, b), ParsedColorFormat.RgbPlain);
+                    return ColorParseResult.Ok(new Unicolour(ColourSpace.Rgb, r, g, b), ParsedColorFormat.RgbPlain);
                 }
                 catch (Exception ex)
                 {
@@ -54,9 +57,7 @@ public class RgbPlainColorParser : IColorParser
         {
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture) / 100.0;
         }
-        else
-        {
-            return double.Parse(value, CultureInfo.InvariantCulture) / maxValue;
-        }
+
+        return double.Parse(value, CultureInfo.InvariantCulture) / maxValue;
     }
 }

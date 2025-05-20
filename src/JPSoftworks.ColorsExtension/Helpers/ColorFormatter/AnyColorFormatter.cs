@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using JPSoftworks.ColorsExtension.Helpers.ColorParser;
+﻿using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorFormatter;

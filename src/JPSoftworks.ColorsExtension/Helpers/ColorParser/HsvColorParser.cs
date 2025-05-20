@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -9,7 +8,7 @@ public class HsvColorParser : IColorParser
 {
     // Matches: hsv(h, s%, v%) or hsva(h, s%, v%, a)
     // Examples: hsv(0, 100%, 100%), hsva(0, 100%, 100%, 0.5)
-    private static readonly Regex HsvPattern = new Regex(
+    private static readonly Regex HsvPattern = new(
         @"^hsva?\s*\(\s*(\d+(\.\d+)?)\s*,\s*(\d+(\.\d+)?)%\s*,\s*(\d+(\.\d+)?)%(?:\s*,\s*([0-9.]+))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -17,7 +16,9 @@ public class HsvColorParser : IColorParser
     {
         var match = HsvPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid HSV format: {input}");
+        }
 
         try
         {

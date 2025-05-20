@@ -4,10 +4,7 @@
 // 
 // ------------------------------------------------------------
 
-using System;
 using System.Runtime.InteropServices;
-using System.Threading;
-using Microsoft.CommandPalette.Extensions;
 
 namespace JPSoftworks.ColorsExtension;
 

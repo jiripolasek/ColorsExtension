@@ -1,5 +1,4 @@
-﻿
-namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
 public class NamedColorResult
 {
@@ -17,14 +16,22 @@ public class NamedColorResult
     }
 
     public static NamedColorResult Ok(string colorName, string colorSet, (int r, int g, int b) rgb)
-        => new NamedColorResult(true, colorName, colorSet, rgb);
+    {
+        return new NamedColorResult(true, colorName, colorSet, rgb);
+    }
 
     public static NamedColorResult Fail()
-        => new NamedColorResult(false, null, null, null);
+    {
+        return new NamedColorResult(false, null, null, null);
+    }
 
     public string GetQualifiedName()
     {
-        if (!this.Success) return "";
+        if (!this.Success)
+        {
+            return "";
+        }
+
         return $"{this.ColorName} ({this.ColorSet})";
     }
 }

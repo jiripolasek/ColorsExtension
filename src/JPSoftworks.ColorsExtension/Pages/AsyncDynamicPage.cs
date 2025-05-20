@@ -4,30 +4,25 @@
 //
 // ------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CommandPalette.Extensions;
+using System.Diagnostics;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
-
 public abstract class AsyncDynamicListPage : DynamicListPage
 {
-    private CancellationTokenSource _updateCancellationSource;
+    private const int DebounceDelayMs = 300;
+    private readonly Lock _itemsLock = new();
+    private readonly Lock _searchLock = new();
     private readonly SemaphoreSlim _updateSemaphore = new(1, 1);
     private IListItem[] _currentItems = [];
 
     private Timer? _debounceTimer;
-    private const int DebounceDelayMs = 300;
     private bool _isDisposed;
+    private IListItem[]? _lastSearchResults;
 
     private string _lastSearchText = "";
-    private IListItem[]? _lastSearchResults;
-    private readonly Lock _itemsLock = new();
-    private readonly Lock _searchLock = new();
+    private CancellationTokenSource _updateCancellationSource;
 
     protected AsyncDynamicListPage()
     {
@@ -82,7 +77,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
 
     private void ScheduleSearchUpdate(string searchText)
     {
-        Timer newTimer = new Timer(async void (_) =>
+        var newTimer = new Timer(async void (_) =>
         {
             try
             {
@@ -100,9 +95,12 @@ public abstract class AsyncDynamicListPage : DynamicListPage
 
     private async Task UpdateItemsAsync(string searchText)
     {
-        if (this._isDisposed) return;
+        if (this._isDisposed)
+        {
+            return;
+        }
 
-        bool acquired = await this._updateSemaphore.WaitAsync(0);
+        var acquired = await this._updateSemaphore.WaitAsync(0);
         if (!acquired)
         {
             this.ScheduleSearchUpdate(searchText);
@@ -117,7 +115,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
             lock (this._searchLock)
             {
                 useCachedResults = string.Equals(this._lastSearchText, searchText, StringComparison.Ordinal)
-                    && this._lastSearchResults != null;
+                                   && this._lastSearchResults != null;
                 if (useCachedResults)
                 {
                     cachedResults = this._lastSearchResults;
@@ -182,7 +180,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
 
     protected virtual void HandleSearchError(Exception ex, string searchText)
     {
-        System.Diagnostics.Debug.WriteLine($"Error searching for '{searchText}': {ex.Message}");
+        Debug.WriteLine($"Error searching for '{searchText}': {ex.Message}");
     }
 
     private void UpdateItems(IListItem[] newItems)
@@ -197,7 +195,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
             return;
         }
 
-        bool itemsChanged = false;
+        var itemsChanged = false;
 
         lock (this._itemsLock)
         {
@@ -210,7 +208,7 @@ public abstract class AsyncDynamicListPage : DynamicListPage
             }
             else
             {
-                for (int i = 0; i < oldItems.Length; i++)
+                for (var i = 0; i < oldItems.Length; i++)
                 {
                     if (!ReferenceEquals(oldItems[i], newItems[i]) &&
                         !string.Equals(oldItems[i].Title, newItems[i].Title, StringComparison.Ordinal))

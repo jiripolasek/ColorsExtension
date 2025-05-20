@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -9,7 +8,7 @@ public class RgbModernColorParser : IColorParser
 {
     // Matches: rgb(r g b) or rgb(r g b / a)
     // Examples: rgb(255 0 0), rgb(255 0 0 / 0.5), rgb(100% 0% 0%)
-    private static readonly Regex RgbModernPattern = new Regex(
+    private static readonly Regex RgbModernPattern = new(
         @"^rgba?\s*\(\s*(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?%?)(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -17,7 +16,9 @@ public class RgbModernColorParser : IColorParser
     {
         var match = RgbModernPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid modern RGB format: {input}");
+        }
 
         try
         {
@@ -40,9 +41,7 @@ public class RgbModernColorParser : IColorParser
         {
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture) / 100.0;
         }
-        else
-        {
-            return double.Parse(value, CultureInfo.InvariantCulture) / maxValue;
-        }
+
+        return double.Parse(value, CultureInfo.InvariantCulture) / maxValue;
     }
 }

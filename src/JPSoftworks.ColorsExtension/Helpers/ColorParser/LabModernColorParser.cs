@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -9,7 +8,7 @@ public class LabModernColorParser : IColorParser
 {
     // Matches: lab(l% a b) or lab(l% a b / alpha)
     // Examples: lab(50% 40 30), lab(50% 40 30 / 0.5)
-    private static readonly Regex LabPattern = new Regex(
+    private static readonly Regex LabPattern = new(
         @"^lab\s*\(\s*(\d+(?:\.\d+)?%?)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -17,7 +16,9 @@ public class LabModernColorParser : IColorParser
     {
         var match = LabPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid LAB format: {input}");
+        }
 
         try
         {
@@ -41,9 +42,7 @@ public class LabModernColorParser : IColorParser
             // For L* in LAB, 0% = 0, 100% = 100
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture);
         }
-        else
-        {
-            return double.Parse(value, CultureInfo.InvariantCulture);
-        }
+
+        return double.Parse(value, CultureInfo.InvariantCulture);
     }
 }

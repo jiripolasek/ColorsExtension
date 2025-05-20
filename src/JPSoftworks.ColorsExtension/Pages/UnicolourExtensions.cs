@@ -4,8 +4,6 @@
 // 
 // ------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Pages;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -9,7 +8,7 @@ public class LchModernColorParser : IColorParser
 {
     // Matches: lch(l% c h) or lch(l% c h / alpha)  
     // Examples: lch(50% 40 30), lch(50% 40 30 / 0.5)
-    private static readonly Regex LchPattern = new Regex(
+    private static readonly Regex LchPattern = new(
         @"^lch\s*\(\s*(\d+(?:\.\d+)?%?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*\)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -17,7 +16,9 @@ public class LchModernColorParser : IColorParser
     {
         var match = LchPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid LCH format: {input}");
+        }
 
         try
         {
@@ -41,9 +42,7 @@ public class LchModernColorParser : IColorParser
             // For L* in LCH, 0% = 0, 100% = 100
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture);
         }
-        else
-        {
-            return double.Parse(value, CultureInfo.InvariantCulture);
-        }
+
+        return double.Parse(value, CultureInfo.InvariantCulture);
     }
 }

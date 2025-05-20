@@ -1,18 +1,18 @@
-﻿using System;
-using JPSoftworks.ColorsExtension.Helpers.ColorParser;
+﻿using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorFormatter;
 
 public class RgbPlainColorFormatter : IColorFormatter
 {
-    public ParsedColorFormat TargetFormat => ParsedColorFormat.RgbPlain;
     private readonly bool _useSpaces;
 
     public RgbPlainColorFormatter(bool useSpaces = false)
     {
         this._useSpaces = useSpaces;
     }
+
+    public ParsedColorFormat TargetFormat => ParsedColorFormat.RgbPlain;
 
     public string Format(Unicolour color)
     {

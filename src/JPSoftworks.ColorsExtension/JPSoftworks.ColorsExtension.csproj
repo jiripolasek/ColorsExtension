@@ -97,6 +97,7 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Never</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <Target Name="UpdateVersionFromManifest" BeforeTargets="BeforeBuild">

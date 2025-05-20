@@ -4,8 +4,6 @@
 // 
 // ------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 
@@ -31,7 +29,6 @@ internal static class BitmapStreamFactory
     {
         try
         {
-
             // 1) Clamp corner radius so it never exceeds half the side length
             var radius = Math.Min(cornerRadius, size / 2.0);
             // We'll treat each pixel as covering [x, x+1)×[y, y+1)

@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Windows.Storage;
 
 namespace JPSoftworks.ColorsExtension.Services;
 
 /// <summary>
-/// Maintains an in-memory MRU list with deduplication and a size limit for type <typeparamref name="T"/>.
+/// Maintains an in-memory MRU list with deduplication and a size limit for type <typeparamref name="T" />.
 /// </summary>
 public class HistoryManager<T>
 {
-    private readonly HistoryStorage<T> _storage;
-    private readonly List<T> _items;
     private readonly IEqualityComparer<T> _comparer;
+    private readonly List<T> _items;
+    private readonly HistoryStorage<T> _storage;
 
     /// <summary>
     /// Read-only view of the current MRU items.
@@ -40,7 +36,9 @@ public class HistoryManager<T>
         JsonSerializerOptions? jsonOptions = null)
     {
         if (limit <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(limit), "Limit must be positive.");
+        }
 
         this.Limit = limit;
         this._comparer = comparer ?? EqualityComparer<T>.Default;
@@ -59,7 +57,7 @@ public class HistoryManager<T>
     }
 
     /// <summary>
-    /// Adds an item to the top of the MRU, removes duplicates and enforces <see cref="Limit"/>. Persists changes.
+    /// Adds an item to the top of the MRU, removes duplicates and enforces <see cref="Limit" />. Persists changes.
     /// </summary>
     /// <param name="item">The item to add.</param>
     public async Task AddAsync(T item)

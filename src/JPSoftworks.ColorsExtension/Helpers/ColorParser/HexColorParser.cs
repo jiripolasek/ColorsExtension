@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -15,7 +14,9 @@ public class HexColorParser : IColorParser
     {
         var match = HexPattern.Match(input);
         if (!match.Success)
+        {
             return ColorParseResult.Fail($"Invalid hex format: {input}");
+        }
 
         var hex = match.Groups[1].Value;
         var hasHash = input.StartsWith("#", StringComparison.OrdinalIgnoreCase);
@@ -25,9 +26,12 @@ public class HexColorParser : IColorParser
             if (hex.Length == 3 || hex.Length == 4)
             {
                 // Expand short hex (RGB/RGBA)
-                var r = int.Parse(string.Concat(hex.AsSpan(0, 1), hex.AsSpan(0, 1)), NumberStyles.HexNumber, CultureInfo.InvariantCulture) / 255.0;
-                var g = int.Parse(string.Concat(hex.AsSpan(1, 1), hex.AsSpan(1, 1)), NumberStyles.HexNumber, CultureInfo.InvariantCulture) / 255.0;
-                var b = int.Parse(string.Concat(hex.AsSpan(2, 1), hex.AsSpan(2, 1)), NumberStyles.HexNumber, CultureInfo.InvariantCulture) / 255.0;
+                var r = int.Parse(string.Concat(hex.AsSpan(0, 1), hex.AsSpan(0, 1)), NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture) / 255.0;
+                var g = int.Parse(string.Concat(hex.AsSpan(1, 1), hex.AsSpan(1, 1)), NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture) / 255.0;
+                var b = int.Parse(string.Concat(hex.AsSpan(2, 1), hex.AsSpan(2, 1)), NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture) / 255.0;
 
                 // Ignore alpha for now as requested
                 var format = hasHash ? ParsedColorFormat.HexShort : ParsedColorFormat.HexWithoutHash;
