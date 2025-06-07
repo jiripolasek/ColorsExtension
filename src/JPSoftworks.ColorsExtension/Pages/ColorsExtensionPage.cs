@@ -15,16 +15,17 @@ namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 {
+    private readonly ColorParsingCoordinator _colorParsingCoordinator;
     private readonly NamedColorManager _namedColorManager = new();
-    private readonly AnyColorParser _parser = new();
-    private Unicolour? _color;
-    private ColorParseResult? _result;
 
     public ColorsExtensionPage()
     {
         this.Icon = Icons.ColorWheel;
         this.Title = Strings.Colors!;
         this.Name = Strings.Open!;
+        this.PlaceholderText = "Type color code or name (e.g. #FFCC00 or red)...";
+
+        this._colorParsingCoordinator = new ColorParsingCoordinator(this._namedColorManager);
     }
 
     protected override Task<IListItem[]> LoadInitialItemsAsync(CancellationToken cancellationToken)
@@ -41,49 +42,69 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
     protected override async Task<IListItem[]> SearchItemsAsync(string searchText, CancellationToken cancellationToken)
     {
-        try
-        {
-            this._result = this._parser.Parse(searchText);
-            this._color = this._result.Success ? this._result.Color : null;
-        }
-        catch (Exception)
-        {
-            this._color = null;
-        }
+        var combinedParserResult = this._colorParsingCoordinator.Parse(searchText);
 
-        if (this._result is not { Success: true })
+        return combinedParserResult.Strategy switch
         {
-            this.EmptyContent = new CommandItem(new NoOpCommand())
-            {
-                Icon = Icons.ColorWheelLarge, Title = Strings.ColorNotRecognized!
-            };
+            CombinedParseStrategy.ExactMatch => await this.SingleColorResults(combinedParserResult.ExactResult!.Color!),
+            CombinedParseStrategy.AutoSelectNamed => await this.SingleColorResults(new Unicolour(ColourSpace.Rgb255,
+                combinedParserResult.NamedResult!.BestMatch!.Rgb!.Value.R,
+                combinedParserResult.NamedResult.BestMatch.Rgb.Value.G,
+                combinedParserResult.NamedResult.BestMatch.Rgb.Value.B)),
+            CombinedParseStrategy.ShowNamedOptions => this.SelectColorResults(combinedParserResult.NamedResult!.AllMatches),
+            _ => this.NoMatchResults()
+        };
+    }
 
-            return [];
-        }
-
-        List<ColorListItem> namedColors = [];
-        var rgbByte255 = this._color!.Rgb.Byte255;
-        var colorName = this._namedColorManager.GetNameByRgb(rgbByte255.R, rgbByte255.G, rgbByte255.B);
-        if (colorName.Success)
+    private IListItem[] NoMatchResults()
+    {
+        this.EmptyContent = new CommandItem(new NoOpCommand())
         {
-            namedColors.Add(await ColorListItem.CreateAsync(this._color, ParsedColorFormat.NamedColor));
-        }
+            Icon = Icons.ColorWheelLarge, Title = Strings.ColorNotRecognized!
+        };
+        return [];
+    }
 
+    private IListItem[] SelectColorResults(List<NamedColorResult> matches)
+    {
+        return
+        [
+            ..matches.Where(static t => t.Success)
+                .Select(namedColorResult => new SelectColorListItem(this, namedColorResult))
+        ];
+    }
+
+    private async ValueTask<IListItem[]> SingleColorResults(Unicolour color)
+    {
         return
         [
             // color formats
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.HexLong),
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.RgbModern),
-            ..namedColors,
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.HslModern),
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.Hsv),
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.HwbModern),
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.LchModern),
-            await ColorListItem.CreateAsync(this._color, ParsedColorFormat.LabModern),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.HexLong),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.RgbModern),
+            ..await this.GetColorsNameItems(color),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.HslModern),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.Hsv),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.HwbModern),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.LchModern),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.LabModern),
 
             // gradients
-            .. await BuildBasicGradientAsync(this._color)
+            .. await BuildBasicGradientAsync(color)
         ];
+    }
+
+    private async ValueTask<List<ColorListItem>> GetColorsNameItems(Unicolour? color)
+    {
+        List<ColorListItem> colorListItems = [];
+        var rgbByte255 = color!.Rgb.Byte255;
+
+        var namedColor = this._namedColorManager.GetNameByRgb(rgbByte255.R, rgbByte255.G, rgbByte255.B);
+        foreach (var namedColorResult in namedColor)
+        {
+            colorListItems.Add(await ColorListItem.CreateAsync(color, namedColorResult.GetQualifiedName()));
+        }
+
+        return colorListItems;
     }
 
     private static async Task<ColorListItem[]> BuildBasicGradientAsync(Unicolour baseColor)

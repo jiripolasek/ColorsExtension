@@ -1,28 +1,46 @@
-﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
 
-public class NamedColorResult
+namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+
+internal class NamedColorResult
 {
     public bool Success { get; }
     public string? ColorName { get; }
-    public string? ColorSet { get; }
-    public (int r, int g, int b)? Rgb { get; }
+    public IColorSet? ColorSetObject { get; }
+    public RgbColor? Rgb { get; }
 
-    private NamedColorResult(bool success, string? colorName, string? colorSet, (int r, int g, int b)? rgb)
+    private NamedColorResult(bool success, string? colorName, RgbColor? rgb, IColorSet? colorSetObject)
     {
         this.Success = success;
         this.ColorName = colorName;
-        this.ColorSet = colorSet;
         this.Rgb = rgb;
+        this.ColorSetObject = colorSetObject;
     }
 
-    public static NamedColorResult Ok(string colorName, string colorSet, (int r, int g, int b) rgb)
+    public static NamedColorResult Ok(string colorName, RgbColor rgb, IColorSet colorSetObject)
     {
-        return new NamedColorResult(true, colorName, colorSet, rgb);
+        return new NamedColorResult(true, colorName, rgb, colorSetObject);
     }
 
     public static NamedColorResult Fail()
     {
         return new NamedColorResult(false, null, null, null);
+    }
+
+    public string GetQueryName()
+    {
+        if (!this.Success)
+        {
+            return "";
+        }
+
+        return $"""
+                "{this.ColorName}" /palette:{this.ColorSetObject?.Id}
+                """;
     }
 
     public string GetQualifiedName()
@@ -32,6 +50,6 @@ public class NamedColorResult
             return "";
         }
 
-        return $"{this.ColorName} ({this.ColorSet})";
+        return $"{this.ColorName} ({this.ColorSetObject?.Name})";
     }
 }

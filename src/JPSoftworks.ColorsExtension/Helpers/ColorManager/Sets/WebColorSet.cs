@@ -6,10 +6,12 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-// CSS Level 1-3 Web Colors
-public class WebColorSet : IColorSet
+/// <summary>
+/// CSS Level 1-3 Web Colors
+/// </summary>
+internal class WebColorSet : IColorSet
 {
-    private readonly Dictionary<string, (int r, int g, int b)> _colors = new(StringComparer.OrdinalIgnoreCase)
+    private readonly Dictionary<string, RgbColor> _colors = new(StringComparer.OrdinalIgnoreCase)
     {
         // CSS1 Colors (16 colors)
         { "aqua", (0, 255, 255) },
@@ -165,7 +167,9 @@ public class WebColorSet : IColorSet
         { "yellowgreen", (154, 205, 50) }
     };
 
-    public string Name => "web color";
+    public string Name => "web colors";
 
-    public IReadOnlyDictionary<string, (int r, int g, int b)> Colors => this._colors;
+    public string Id => "web";
+
+    public IReadOnlyDictionary<string, RgbColor> Colors => this._colors;
 }

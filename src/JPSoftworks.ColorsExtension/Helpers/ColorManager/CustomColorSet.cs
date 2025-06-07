@@ -1,13 +1,21 @@
-﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
 
-public class CustomColorSet : IColorSet
+namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+
+internal class CustomColorSet : IColorSet
 {
-    public CustomColorSet(string name, Dictionary<string, (int r, int g, int b)> colors)
+    public string Id { get; }
+    public string Name { get; }
+    public IReadOnlyDictionary<string, RgbColor> Colors { get; }
+
+    public CustomColorSet(string id, string name, Dictionary<string, RgbColor> colors)
     {
+        this.Id = id;
         this.Name = name;
         this.Colors = colors;
     }
-
-    public string Name { get; }
-    public IReadOnlyDictionary<string, (int r, int g, int b)> Colors { get; }
 }

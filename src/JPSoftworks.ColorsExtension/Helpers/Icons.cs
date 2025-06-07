@@ -17,4 +17,6 @@ internal static class Icons
     internal static IconInfo Info => new("\uE946");
 
     internal static IconInfo Warning => new("\uE7BA");
+
+    internal static IconInfo ColorPalette { get; } = new("\uE790");
 }

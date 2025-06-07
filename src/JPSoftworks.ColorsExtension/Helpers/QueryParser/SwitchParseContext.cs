@@ -4,13 +4,9 @@
 // 
 // ------------------------------------------------------------
 
-namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+namespace JPSoftworks.ColorsExtension.Helpers.QueryParser;
 
-internal interface IColorSet
+internal class SwitchParseContext
 {
-    string Id { get; }
-
-    string Name { get; }
-
-    IReadOnlyDictionary<string, RgbColor> Colors { get; }
+    public List<Suggestion> CurrentSuggestions { get; } = [];
 }

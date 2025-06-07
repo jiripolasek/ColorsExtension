@@ -1,8 +1,14 @@
-﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
 
-public class PopularColorSet : IColorSet
+namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
+
+internal class PopularColorSet : IColorSet
 {
-    private readonly Dictionary<string, (int r, int g, int b)> _colors
+    private readonly Dictionary<string, RgbColor> _colors
         = new(StringComparer.OrdinalIgnoreCase)
         {
             // Modern and trendy color names
@@ -53,7 +59,9 @@ public class PopularColorSet : IColorSet
             { "ebony", (49, 46, 46) }
         };
 
-    public string Name => "popular color";
+    public string Name => "popular colors";
 
-    public IReadOnlyDictionary<string, (int r, int g, int b)> Colors => this._colors;
+    public string Id => "popular";
+
+    public IReadOnlyDictionary<string, RgbColor> Colors => this._colors;
 }

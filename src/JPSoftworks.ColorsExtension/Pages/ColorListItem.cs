@@ -16,19 +16,19 @@ namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class ColorListItem : ListItem
 {
+    private static readonly AnyColorFormatter Formatter = new();
+
     private ColorListItem(Unicolour color, ParsedColorFormat format, IRandomAccessStream? iconStream) : base(
         new NoOpCommand())
     {
-        var c = new AnyColorFormatter();
-
-        this.Title = c.Format(color, format);
+        this.Title = Formatter.Format(color, format);
         this.Command = new CopyTextCommand(this.Title);
         this.Tags = [new Tag(ColorFormatNames.GetDisplayName(format))];
         this.Subtitle = ColorFormatNames.GetDisplayName(format);
         this.Icon = iconStream == null ? null : IconInfo.FromStream(iconStream);
         this.MoreCommands =
         [
-            new CommandContextItem(new CopyTextCommand(c.Format(color, format)))
+            new CommandContextItem(new CopyTextCommand(Formatter.Format(color, format)))
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
             }

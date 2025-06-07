@@ -6,7 +6,7 @@
 
 using Wacton.Unicolour;
 
-namespace JPSoftworks.ColorsExtension.Pages;
+namespace JPSoftworks.ColorsExtension.Helpers;
 
 internal static class UnicolourExtensions
 {

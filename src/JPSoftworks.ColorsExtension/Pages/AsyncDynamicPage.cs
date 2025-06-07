@@ -1,7 +1,7 @@
 ﻿// ------------------------------------------------------------
-//
+// 
 // Copyright (c) Jiří Polášek. All rights reserved.
-//
+// 
 // ------------------------------------------------------------
 
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
-public abstract class AsyncDynamicListPage : DynamicListPage
+internal abstract class AsyncDynamicListPage : DynamicListPage
 {
     private const int DebounceDelayMs = 300;
     private readonly Lock _itemsLock = new();

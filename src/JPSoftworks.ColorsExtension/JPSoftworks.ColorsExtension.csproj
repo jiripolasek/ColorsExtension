@@ -46,6 +46,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FuzzySharp" />
     <PackageReference Include="JPSoftworks.CommandPalette.Extensions.Toolkit" />
     <PackageReference Include="Microsoft.CommandPalette.Extensions" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
