@@ -1,4 +1,10 @@
-﻿using System.Globalization;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
+
+using System.Globalization;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Wacton.Unicolour;
 

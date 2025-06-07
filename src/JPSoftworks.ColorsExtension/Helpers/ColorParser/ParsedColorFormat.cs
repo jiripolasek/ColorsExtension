@@ -1,4 +1,10 @@
-﻿namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
+
+namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;
 
 public enum ParsedColorFormat
 {

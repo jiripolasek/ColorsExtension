@@ -1,4 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
+
+using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorParser;

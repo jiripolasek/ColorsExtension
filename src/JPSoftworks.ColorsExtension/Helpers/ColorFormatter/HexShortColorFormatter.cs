@@ -1,4 +1,10 @@
-﻿using JPSoftworks.ColorsExtension.Helpers.ColorParser;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
+
+using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorFormatter;

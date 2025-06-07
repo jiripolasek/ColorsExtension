@@ -1,4 +1,10 @@
-﻿using System.Globalization;
+﻿// ------------------------------------------------------------
+// 
+// Copyright (c) Jiří Polášek. All rights reserved.
+// 
+// ------------------------------------------------------------
+
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
