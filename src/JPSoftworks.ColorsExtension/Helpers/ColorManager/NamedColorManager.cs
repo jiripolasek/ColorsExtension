@@ -90,7 +90,7 @@ internal class NamedColorManager
     {
         return this._searchEntries.Where(t => palette == null || t.ColorSet.Id == palette)
             .Where(t => t.SearchKey == query)
-            .Select(static exactMatch => NamedColorResult.Ok(exactMatch.ColorSet.Name, exactMatch.Color, exactMatch.ColorSet))
+            .Select(static exactMatch => NamedColorResult.Ok(exactMatch.ColorName, exactMatch.Color, exactMatch.ColorSet))
             .ToList();
     }
 
@@ -232,6 +232,8 @@ internal class NamedColorManager
 
         return closest ?? NamedColorResult.Fail();
     }
+
+    public ICollection<IColorSet> ListRegisteredColorSets() => this._colorSets;
 
     record SearchEntry(string ColorName, string SearchKey, IColorSet ColorSet, RgbColor Color);
 }

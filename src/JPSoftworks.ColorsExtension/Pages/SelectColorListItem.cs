@@ -33,13 +33,10 @@ internal sealed partial class SelectColorListItem : ListItem
         _ = this.SetIconAsync(colorResult.Rgb!.Value);
     }
 
-    private static string BuildSubtitle(RgbColor rgb)
+    internal static string BuildSubtitle(RgbColor rgb)
     {
-        // format as hex • rgb • hsl
-
         var unicolour = new Unicolour(ColourSpace.Rgb255, rgb.R, rgb.G, rgb.B);
-
-        return $"{unicolour.Hex}  • RGB {unicolour.Rgb.Byte255}  • HSL {unicolour.Hsl}";
+        return $"{unicolour.Hex} • RGB {unicolour.Rgb.Byte255} • HSL {unicolour.Hsl}";
     }
 
     private async Task SetIconAsync(RgbColor rgbColor)
