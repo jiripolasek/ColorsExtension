@@ -13,13 +13,14 @@ namespace JPSoftworks.ColorsExtension.Helpers.QueryParser;
 /// Parser designed for command palette input with support for incremental parsing
 /// </summary>
 /// <typeparam name="TOptions">The type of options object to populate</typeparam>
-public class CommandPaletteParser<TOptions> where TOptions : class, new()
+public partial class CommandPaletteParser<TOptions> where TOptions : class, new()
 {
+    private const StringComparison PrefixComparison = StringComparison.OrdinalIgnoreCase;
     private readonly List<SwitchDefinition<TOptions>> _switches = [];
     private readonly string _switchPrefix;
     private readonly Regex _switchRegex;
     private readonly char _valueSeparator;
-    private readonly Regex _whitespaceRegex = new(@"\s+", RegexOptions.Compiled);
+    private readonly Regex _whitespaceRegex = WhitespaceRegex();
 
     public CommandPaletteParser(string switchPrefix = "/", char valueSeparator = ':')
     {
@@ -89,9 +90,9 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
 
         // Determine if we're at the end and might be typing a new switch
         var isAtEnd = cursorPosition < 0 || cursorPosition >= input.Length;
-        var lastChar = input.Length > 0 ? input[input.Length - 1] : '\0';
-        var endsWithPrefix = input.EndsWith(this._switchPrefix.Replace("\\", ""));
-        var endsWithSpace = lastChar == ' ';
+        var lastChar = input.Length > 0 ? input[^1] : '\0';
+        var endsWithPrefix = input.EndsWith(this._switchPrefix, StringComparison.OrdinalIgnoreCase);
+        var endsWithSpace = char.IsWhiteSpace(lastChar);
 
         // Check for incomplete switch at the end
         var incompleteSwitch = this.DetectIncompleteSwitch(input, cursorPosition);
@@ -101,7 +102,8 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
         }
 
         // Suggest switches if at end with space or switch prefix
-        if (isAtEnd && (endsWithSpace || endsWithPrefix))
+        // if (isAtEnd && (endsWithSpace || endsWithPrefix))
+        if (isAtEnd && endsWithPrefix)
         {
             suggestions.AddRange(this.GenerateAvailableSwitchSuggestions(options));
         }
@@ -121,7 +123,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
             var parseContext = this.ProcessSwitchMatch(match, options, errors, warnings, cursorPosition);
 
             // Add any suggestions from this switch
-            if (parseContext.CurrentSuggestions.Any())
+            if (parseContext.CurrentSuggestions.Count != 0)
             {
                 suggestions.AddRange(parseContext.CurrentSuggestions);
             }
@@ -150,14 +152,13 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
         var checkPosition = cursorPosition < 0 ? input.Length : cursorPosition;
 
         // Find the last switch prefix before the cursor
-        var prefix = this._switchPrefix.Replace("\\", "");
-        var lastPrefixIndex = input.LastIndexOf(prefix, Math.Max(0, checkPosition - 1));
+        var lastPrefixIndex = input.LastIndexOf(this._switchPrefix, Math.Max(0, checkPosition - 1), PrefixComparison);
 
         if (lastPrefixIndex >= 0)
         {
-            var afterPrefix = input.Substring(lastPrefixIndex + prefix.Length);
+            var afterPrefix = input[(lastPrefixIndex + this._switchPrefix.Length)..];
             var spaceIndex = afterPrefix.IndexOf(' ');
-            var nextPrefixIndex = afterPrefix.IndexOf(prefix);
+            var nextPrefixIndex = afterPrefix.IndexOf(this._switchPrefix, PrefixComparison);
 
             var endIndex = Math.Min(
                 spaceIndex >= 0 ? spaceIndex : int.MaxValue,
@@ -173,8 +174,8 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
                 if (separatorIndex >= 0)
                 {
                     // We have a separator, check if we need value suggestions
-                    var switchName = partial.Substring(0, separatorIndex);
-                    var partialValue = partial.Substring(separatorIndex + 1);
+                    var switchName = partial[..separatorIndex];
+                    var partialValue = partial[(separatorIndex + 1)..];
                     return new IncompleteSwitchInfo(switchName, true, partialValue, lastPrefixIndex);
                 }
                 else
@@ -200,7 +201,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
                 if (string.IsNullOrEmpty(incomplete.PartialName) ||
                     sw.Name.StartsWith(incomplete.PartialName, StringComparison.OrdinalIgnoreCase))
                 {
-                    var completion = this._switchPrefix.Replace("\\", "") + sw.Name;
+                    var completion = this._switchPrefix + sw.Name;
                     if (sw.HasArgument)
                     {
                         completion += this._valueSeparator;
@@ -236,7 +237,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
                                 SuggestionType.Value,
                                 alias.Key,
                                 $"{alias.Key} → {alias.Value}",
-                                incomplete.Position + incomplete.PartialName.Length + 1,
+                                incomplete.Position + incomplete.PartialName.Length + 2,
                                 incomplete.PartialValue?.Length ?? 0
                             ));
                         }
@@ -246,18 +247,25 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
                 // Add custom value suggestions
                 if (switchDef.ValueSuggestions != null)
                 {
-                    foreach (var suggestion in switchDef.ValueSuggestions)
+                    var matchesExactly = switchDef.ValueSuggestions.Any(value => string.Equals(value, incomplete.PartialValue, StringComparison.OrdinalIgnoreCase));
+
+                    // If partial value matches exactly some value, then skip suggestions entirely. Practical reason is
+                    // that in that case the query is complete.
+                    if (!matchesExactly)
                     {
-                        if (string.IsNullOrEmpty(incomplete.PartialValue) ||
-                            suggestion.StartsWith(incomplete.PartialValue, StringComparison.OrdinalIgnoreCase))
+                        foreach (var suggestion in switchDef.ValueSuggestions)
                         {
-                            suggestions.Add(new Suggestion(
-                                SuggestionType.Value,
-                                suggestion,
-                                null,
-                                incomplete.Position + incomplete.PartialName.Length + 1,
-                                incomplete.PartialValue?.Length ?? 0
-                            ));
+                            if (string.IsNullOrEmpty(incomplete.PartialValue) ||
+                                suggestion.StartsWith(incomplete.PartialValue, StringComparison.OrdinalIgnoreCase))
+                            {
+                                suggestions.Add(new Suggestion(
+                                    SuggestionType.Value,
+                                    suggestion,
+                                    null,
+                                    incomplete.Position + incomplete.PartialName.Length + 2,
+                                    incomplete.PartialValue?.Length ?? 0
+                                ));
+                            }
                         }
                     }
                 }
@@ -270,10 +278,11 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
     private List<Suggestion> GenerateAvailableSwitchSuggestions(TOptions currentOptions)
     {
         return this._switches.Select(sw => new Suggestion(
-            SuggestionType.Switch,
-            this._switchPrefix.Replace("\\", "") + sw.Name + (sw.HasArgument ? this._valueSeparator.ToString() : ""),
-            sw.Description,
-            -1, 0
+            Type: SuggestionType.Switch,
+            CompletionText: this._switchPrefix + sw.Name + (sw.HasArgument ? this._valueSeparator : ""),
+            Description: sw.Description,
+            ReplaceStart: 0,
+            ReplaceLength: 0
         )).ToList();
     }
 
@@ -311,7 +320,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
             var error = new ParseError(
                 severity,
                 $"Invalid switch name '{this._switchPrefix}{switchName}' - switch names should contain only letters, numbers, and hyphens",
-                match.Index,
+                match.Index + this._switchPrefix.Length,
                 match.Length);
 
             if (isActive)
@@ -336,7 +345,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
             {
                 var errorMessage = suggestion != null
                     ? $"Unknown switch '{this._switchPrefix}{switchName}' - did you mean '{this._switchPrefix}{suggestion}'?"
-                    : $"Unknown switch '{this._switchPrefix}{switchName}'. Available switches: {string.Join(", ", this._switches.Select(s => s.Name))}";
+                    : $"Unknown switch '{this._switchPrefix}{switchName}'. Available switches: {string.Join(", ", this._switches.Select(static s => s.Name))}";
 
                 errors.Add(new ParseError(ParseErrorType.UnknownSwitch, errorMessage, match.Index, match.Length));
             }
@@ -345,9 +354,9 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
         }
 
         // Handle aliases
-        if (switchDef.Aliases != null && switchDef.Aliases.ContainsKey(switchValue))
+        if (switchDef.Aliases != null && switchDef.Aliases.TryGetValue(switchValue, out var value))
         {
-            switchValue = switchDef.Aliases[switchValue];
+            switchValue = value;
         }
 
         // Check for missing required value
@@ -361,7 +370,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
             }
             else
             {
-                var validValues = switchDef.Aliases != null && switchDef.Aliases.Count > 0
+                var validValues = switchDef.Aliases is { Count: > 0 }
                     ? $"Expected values: {string.Join(", ", switchDef.Aliases.Keys.Take(5))}..."
                     : "Expected: value required";
 
@@ -459,7 +468,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
         return string.IsNullOrEmpty(bestMatch) ? null : bestMatch;
     }
 
-    private static int CalculateLevenshteinDistance(string source, string target)
+    private static int CalculateLevenshteinDistance(string? source, string? target)
     {
         if (string.IsNullOrEmpty(source))
         {
@@ -500,7 +509,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
     private static bool IsValidSwitchName(string name)
     {
         return !string.IsNullOrEmpty(name) &&
-               name.All(c => char.IsLetterOrDigit(c) || c == '-' || c == '_');
+               name.All(static c => char.IsLetterOrDigit(c) || c == '-' || c == '_');
     }
 
     /// <summary>
@@ -511,7 +520,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
         var sb = new StringBuilder();
         sb.AppendLine("Available switches:");
 
-        foreach (var sw in this._switches.OrderBy(s => s.Name))
+        foreach (var sw in this._switches.OrderBy(static s => s.Name))
         {
             sb.Append($"  {this._switchPrefix}{sw.Name}");
 
@@ -535,4 +544,7 @@ public class CommandPaletteParser<TOptions> where TOptions : class, new()
 
         return sb.ToString();
     }
+
+    [GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+    private static partial Regex WhitespaceRegex();
 }

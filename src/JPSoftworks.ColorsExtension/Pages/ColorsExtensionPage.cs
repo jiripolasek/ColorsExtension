@@ -4,9 +4,11 @@
 // 
 // ------------------------------------------------------------
 
+using JPSoftworks.ColorsExtension.Commands;
 using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
+using JPSoftworks.ColorsExtension.Helpers.QueryParser;
 using JPSoftworks.ColorsExtension.Resources;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Wacton.Unicolour;
@@ -42,7 +44,53 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
     protected override async Task<IListItem[]> SearchItemsAsync(string searchText, CancellationToken cancellationToken)
     {
-        var combinedParserResult = this._colorParsingCoordinator.Parse(searchText);
+        var queryParserResult = ColorQueryParser.Instance.Parse(searchText);
+        if (queryParserResult.HasSuggestions)
+        {
+            List<IListItem> list = [];
+            
+            foreach (var suggestion in queryParserResult.Context.Suggestions)
+            {
+
+                var suffix = suggestion.Type == SuggestionType.Value ? " " : "";
+                var len = suggestion.Type == SuggestionType.Switch
+                    ? Math.Min(suggestion.ReplaceLength + 1, this.SearchText.Length)
+                    : suggestion.ReplaceLength;
+
+                string temp;
+                if (suggestion.ReplaceStart > -1)
+                {
+                    int removeLength = suggestion.ReplaceStart + len > this.SearchText.Length
+                        ? this.SearchText.Length - suggestion.ReplaceStart
+                        : len;
+                    temp = this.SearchText.Remove(suggestion.ReplaceStart, removeLength);
+                    temp = temp.Insert(suggestion.ReplaceStart, suggestion.CompletionText + suffix);
+                }
+                else
+                {
+                    temp = this.SearchText.TrimEnd() + suggestion.CompletionText + suffix;
+                }
+
+                var command = new UpdateSearchTextCommand(temp, this)
+                {
+                    Icon = Icons.Info,
+                    Name = "Apply"
+                };
+
+                var item = new ListItem(command)
+                {
+                    Title = suggestion.CompletionText,
+                    Subtitle = suggestion.Description ?? "",
+                    TextToSuggest = temp
+                };
+
+                list.Add(item);
+            }
+
+            return [.. list];
+        }
+
+        var combinedParserResult = this._colorParsingCoordinator.Parse(queryParserResult.Query, queryParserResult.Options.Palette);
 
         return combinedParserResult.Strategy switch
         {

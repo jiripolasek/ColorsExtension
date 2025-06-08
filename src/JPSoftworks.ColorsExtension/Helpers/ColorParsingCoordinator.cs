@@ -26,7 +26,7 @@ internal class ColorParsingCoordinator
         this._exactParser = new AnyColorParser();
     }
 
-    public CombinedParseResult Parse(string input)
+    public CombinedParseResult Parse(string input, string? palette)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
@@ -35,20 +35,18 @@ internal class ColorParsingCoordinator
             return new CombinedParseResult(input, emptyExact, emptyNamed);
         }
 
-        var queryParserResult = ColorQueryParser.Instance.Parse(input);
-
         // Try exact parsing first
-        var exactResult = this._exactParser.Parse(queryParserResult.Query);
+        var exactResult = this._exactParser.Parse(input);
         if (exactResult.Success)
         {
-            return new CombinedParseResult(queryParserResult.Query, exactResult, null);
+            return new CombinedParseResult(input, exactResult, null);
         }
 
         // Try named color resolution
-        var results = this._namedColorManager.GetColorByName(queryParserResult.Query.Trim(), palette: queryParserResult.Options.Palette);
+        var results = this._namedColorManager.GetColorByName(input, palette: palette);
         var namedResult = results.Count > 0
-            ? new NamedColorResolveResult(queryParserResult.Query, [.. results])
-            : NamedColorResolveResult.Empty(queryParserResult.Query);
-        return new CombinedParseResult(queryParserResult.Query, exactResult, namedResult);
+            ? new NamedColorResolveResult(input, [.. results])
+            : NamedColorResolveResult.Empty(input);
+        return new CombinedParseResult(input, exactResult, namedResult);
     }
 }

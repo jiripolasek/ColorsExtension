@@ -4,6 +4,8 @@
 // 
 // ------------------------------------------------------------
 
+using JPSoftworks.ColorsExtension.Helpers.ColorManager;
+
 namespace JPSoftworks.ColorsExtension.Helpers.QueryParser;
 
 public static class ColorQueryParser
@@ -14,9 +16,12 @@ public static class ColorQueryParser
 
     private static CommandPaletteParser<ColorQueryOptions> Create()
     {
+        NamedColorManager namedColorManager = new NamedColorManager();
+
         return new CommandPaletteParser<ColorQueryOptions>()
             .AddValueSwitch(
                 name: "palette",
-                handler: static (query, arg) => query.Palette = arg);
+                handler: static (query, arg) => query.Palette = arg,
+                valueSuggestions: namedColorManager.ListRegisteredColorSets().Select(static t => t.Id).ToArray());
     }
 }
