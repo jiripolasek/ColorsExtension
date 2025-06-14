@@ -4,7 +4,6 @@
 // 
 // ------------------------------------------------------------
 
-using JPSoftworks.ColorsExtension.Commands;
 using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
@@ -36,63 +35,43 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
         this.EmptyContent = new CommandItem(new NoOpCommand())
         {
-            Icon = Icons.ColorWheelLarge, Title = Strings.ColorSearchPlaceholder!
+            Icon = Icons.ColorWheelLarge,
+            Title = Strings.ColorSearchPlaceholder!
         };
 
         return Task.FromResult(initialItems);
     }
-
-    protected override async Task<IListItem[]> SearchItemsAsync(string searchText, CancellationToken cancellationToken)
+    
+    protected override async Task<IListItem[]> SearchItemsAsync(string previousText, string searchText, CancellationToken cancellationToken)
     {
-        var queryParserResult = ColorQueryParser.Instance.Parse(searchText);
+        var cursorPosition = TextUtilities.FindLastCommonStringIndex(previousText, searchText);
+        var queryParserResult = ColorQueryParser.Instance.Parse(searchText, cursorPosition);
+
         if (queryParserResult.HasSuggestions)
         {
-            List<IListItem> list = [];
-            
-            foreach (var suggestion in queryParserResult.Context.Suggestions)
+            var suggestionItems = queryParserResult.Context.Suggestions.Select(suggestion => new InputSuggestionListItem(suggestion, this)).ToList();
+            if (queryParserResult.Context.Suggestions.Any(static t => t.Type == SuggestionType.Value))
             {
-
-                var suffix = suggestion.Type == SuggestionType.Value ? " " : "";
-                var len = suggestion.Type == SuggestionType.Switch
-                    ? Math.Min(suggestion.ReplaceLength + 1, this.SearchText.Length)
-                    : suggestion.ReplaceLength;
-
-                string temp;
-                if (suggestion.ReplaceStart > -1)
-                {
-                    int removeLength = suggestion.ReplaceStart + len > this.SearchText.Length
-                        ? this.SearchText.Length - suggestion.ReplaceStart
-                        : len;
-                    temp = this.SearchText.Remove(suggestion.ReplaceStart, removeLength);
-                    temp = temp.Insert(suggestion.ReplaceStart, suggestion.CompletionText + suffix);
-                }
-                else
-                {
-                    temp = this.SearchText.TrimEnd() + suggestion.CompletionText + suffix;
-                }
-
-                var command = new UpdateSearchTextCommand(temp, this)
-                {
-                    Icon = Icons.Info,
-                    Name = "Apply"
-                };
-
-                var item = new ListItem(command)
-                {
-                    Title = suggestion.CompletionText,
-                    Subtitle = suggestion.Description ?? "",
-                    TextToSuggest = temp
-                };
-
-                list.Add(item);
+                // Add a command to cancel value the suggestions.
+                // We can remember the current query and don't display suggestions again for it until the user types something else.
             }
+            return [.. suggestionItems];
+        }
 
-            return [.. list];
+        if (queryParserResult.HasErrors)
+        {
+            return [.. queryParserResult.Errors.Select(static error => new InputErrorListItem(error.Message, error.Type))];
+        }
+
+        List<IListItem> result = [];
+        if (queryParserResult.HasWarnings)
+        {
+            result.AddRange(queryParserResult.Context.Warnings.Select(static warning => new InputWarningListItem(warning)));
         }
 
         var combinedParserResult = this._colorParsingCoordinator.Parse(queryParserResult.Query, queryParserResult.Options.Palette);
 
-        return combinedParserResult.Strategy switch
+        var colorResults = combinedParserResult.Strategy switch
         {
             CombinedParseStrategy.ExactMatch => await this.SingleColorResults(combinedParserResult.ExactResult!.Color!),
             CombinedParseStrategy.AutoSelectNamed => await this.SingleColorResults(new Unicolour(ColourSpace.Rgb255,
@@ -102,13 +81,17 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
             CombinedParseStrategy.ShowNamedOptions => this.SelectColorResults(combinedParserResult.NamedResult!.AllMatches),
             _ => this.NoMatchResults()
         };
+        result.AddRange(colorResults);
+
+        return [.. result];
     }
 
     private IListItem[] NoMatchResults()
     {
         this.EmptyContent = new CommandItem(new NoOpCommand())
         {
-            Icon = Icons.ColorWheelLarge, Title = Strings.ColorNotRecognized!
+            Icon = Icons.ColorWheelLarge,
+            Title = Strings.ColorNotRecognized!
         };
         return [];
     }

@@ -4,6 +4,7 @@
 // 
 // ------------------------------------------------------------
 
+using JPSoftworks.ColorsExtension.Helpers;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JPSoftworks.ColorsExtension.Commands;
@@ -19,6 +20,8 @@ internal sealed partial class UpdateSearchTextCommand : InvokableCommand
 
         this._searchText = searchText;
         this._target = target;
+
+        this.Icon = Icons.Colorful.Edit;
     }
     public override ICommandResult Invoke(object? sender)
     {

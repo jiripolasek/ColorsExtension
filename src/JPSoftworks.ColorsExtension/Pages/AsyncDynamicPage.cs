@@ -44,7 +44,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
     /// <summary>
     /// Override this method in your derived class to implement the actual search logic
     /// </summary>
-    protected abstract Task<IListItem[]> SearchItemsAsync(string searchText, CancellationToken cancellationToken);
+    protected abstract Task<IListItem[]> SearchItemsAsync(string previousText, string searchText, CancellationToken cancellationToken);
 
     /// <summary>
     /// Override to implement initial loading if needed
@@ -58,7 +58,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
     {
         if (string.IsNullOrEmpty(this.SearchText))
         {
-            await this.UpdateItemsAsync(this.SearchText);
+            await this.UpdateItemsAsync(this.SearchText, this.SearchText);
         }
     }
 
@@ -72,16 +72,16 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
             }
         }
 
-        this.ScheduleSearchUpdate(newSearch);
+        this.ScheduleSearchUpdate(oldSearch, newSearch);
     }
 
-    private void ScheduleSearchUpdate(string searchText)
+    private void ScheduleSearchUpdate(string previousText, string searchText)
     {
         var newTimer = new Timer(async void (_) =>
         {
             try
             {
-                await this.UpdateItemsAsync(searchText);
+                await this.UpdateItemsAsync(previousText, searchText);
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
         oldTimer?.Dispose();
     }
 
-    private async Task UpdateItemsAsync(string searchText)
+    private async Task UpdateItemsAsync(string previousText, string searchText)
     {
         if (this._isDisposed)
         {
@@ -103,7 +103,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
         var acquired = await this._updateSemaphore.WaitAsync(0);
         if (!acquired)
         {
-            this.ScheduleSearchUpdate(searchText);
+            this.ScheduleSearchUpdate(previousText, searchText);
             return;
         }
 
@@ -146,7 +146,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
                 }
                 else
                 {
-                    newItems = await this.SearchItemsAsync(searchText, cancellationToken);
+                    newItems = await this.SearchItemsAsync(previousText, searchText, cancellationToken);
                 }
 
                 if (!cancellationToken.IsCancellationRequested)
@@ -210,8 +210,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
             {
                 for (var i = 0; i < oldItems.Length; i++)
                 {
-                    if (!ReferenceEquals(oldItems[i], newItems[i]) &&
-                        !string.Equals(oldItems[i].Title, newItems[i].Title, StringComparison.Ordinal))
+                    if (!Equals(oldItems[i], newItems[i]))
                     {
                         this._currentItems = newItems;
                         itemsChanged = true;
