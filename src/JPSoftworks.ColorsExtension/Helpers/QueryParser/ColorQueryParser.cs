@@ -19,10 +19,18 @@ public static class ColorQueryParser
         NamedColorManager namedColorManager = new NamedColorManager();
 
         return new CommandPaletteParser<ColorQueryOptions>()
+            .AddFlag(
+                name: "help",
+                handler: static query => query.ShowHelp = true,
+                description: "Request help")
             .AddEnumValueSwitch(
                 name: "palette",
                 handler: static (query, arg) => query.Palette = arg,
                 description: "Select a color palette from the available options.",
-                valueSuggestions: [.. namedColorManager.ListRegisteredColorSets().Select(static t => new SwitchValueDefinition(t.Id, "Select color palette " + t.Name))]);
+                valueSuggestions:
+                [
+                    .. namedColorManager.ListRegisteredColorSets().Select(selector: static t =>
+                        new SwitchValueDefinition(Value: t.Id, Description: "Select color palette " + t.Name))
+                ]);
     }
 }

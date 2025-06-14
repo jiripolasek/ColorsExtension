@@ -117,25 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Colors" xml:space="preserve">
-    <value>Colors</value>
-  </data>
-  <data name="Colors_Subtitle" xml:space="preserve">
-    <value>Color visualization, conversion, and manipulation</value>
-  </data>
-  <data name="Open" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="ColorSearchPlaceholder" xml:space="preserve">
-    <value>Enter color code or name to start...</value>
-  </data>
-  <data name="ColorNotRecognized" xml:space="preserve">
-    <value>Color not recognized</value>
-  </data>
-  <data name="Command_ShowHelp_Title" xml:space="preserve">
-    <value>Show help</value>
-  </data>
-  <data name="Command_ShowHelp_Name" xml:space="preserve">
-    <value>Show help</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Help" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Help.md;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

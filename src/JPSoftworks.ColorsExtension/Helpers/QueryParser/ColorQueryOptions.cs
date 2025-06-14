@@ -12,4 +12,9 @@ public class ColorQueryOptions
     /// Explicitly selected color palette
     /// </summary>
     public string? Palette { get; set; }
+
+    /// <summary>
+    /// Show help information
+    /// </summary>
+    public bool ShowHelp { get; set; }
 }

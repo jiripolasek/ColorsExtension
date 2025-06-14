@@ -22,14 +22,14 @@ namespace JPSoftworks.ColorsExtension.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    internal class HelpPages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Strings() {
+        internal HelpPages() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace JPSoftworks.ColorsExtension.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("JPSoftworks.ColorsExtension.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("JPSoftworks.ColorsExtension.Resources.HelpPages", typeof(HelpPages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,65 +61,11 @@ namespace JPSoftworks.ColorsExtension.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color not recognized.
+        ///   Looks up a localized string similar to aa.
         /// </summary>
-        internal static string ColorNotRecognized {
+        internal static string Help {
             get {
-                return ResourceManager.GetString("ColorNotRecognized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Colors.
-        /// </summary>
-        internal static string Colors {
-            get {
-                return ResourceManager.GetString("Colors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color visualization, conversion, and manipulation.
-        /// </summary>
-        internal static string Colors_Subtitle {
-            get {
-                return ResourceManager.GetString("Colors_Subtitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter color code or name to start....
-        /// </summary>
-        internal static string ColorSearchPlaceholder {
-            get {
-                return ResourceManager.GetString("ColorSearchPlaceholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show help.
-        /// </summary>
-        internal static string Command_ShowHelp_Name {
-            get {
-                return ResourceManager.GetString("Command_ShowHelp_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show help.
-        /// </summary>
-        internal static string Command_ShowHelp_Title {
-            get {
-                return ResourceManager.GetString("Command_ShowHelp_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open.
-        /// </summary>
-        internal static string Open {
-            get {
-                return ResourceManager.GetString("Open", resourceCulture);
+                return ResourceManager.GetString("Help", resourceCulture);
             }
         }
     }

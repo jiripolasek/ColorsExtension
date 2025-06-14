@@ -4,6 +4,8 @@
 // 
 // ------------------------------------------------------------
 
+using System.Text.RegularExpressions;
+
 namespace JPSoftworks.ColorsExtension.Helpers;
 
 internal static class TextUtilities
@@ -41,5 +43,29 @@ internal static class TextUtilities
         // 3) Caret goes to the end of the changed segment in "after"
         //    which is at index (after.Length - suffix).
         return after.Length - suffix;
+    }
+
+    /// <summary>
+    /// Removes all switches with the specified name from the query string
+    /// </summary>
+    /// <param name="query">The query string to process</param>
+    /// <param name="switchName">The name of the switch to remove (without the '/' prefix)</param>
+    /// <returns>The query string with all specified switches removed</returns>
+    public static string RemoveSwitches(string query, string switchName)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(switchName);
+
+        if (string.IsNullOrWhiteSpace(query) || string.IsNullOrWhiteSpace(switchName))
+        {
+            return query;
+        }
+
+        // 1. /switchName followed by space or end of string
+        // 2. /switchName:value (unquoted value without spaces) followed by space or end of string
+        // 3. /switchName:"value with spaces" (quoted value that can contain spaces)
+        var pattern = $"""\s*/({Regex.Escape(switchName)})(?::(?:"[^"]*"|[^\s"]*)?)?(?=\s|$)""";
+        var result = Regex.Replace(query, pattern, "", RegexOptions.IgnoreCase);
+        return result.Trim();
     }
 }

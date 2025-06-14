@@ -40,4 +40,9 @@ internal static class Icons
 
         internal static IconInfo Edit { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorEdit20.svg");
     }
+
+    internal static class Emojis
+    {
+        internal static IconInfo CryingFace { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentEmojiCryingFace.svg");
+    }
 }

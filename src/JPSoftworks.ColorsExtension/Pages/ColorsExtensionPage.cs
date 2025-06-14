@@ -4,6 +4,7 @@
 // 
 // ------------------------------------------------------------
 
+using JPSoftworks.ColorsExtension.Commands;
 using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
@@ -18,30 +19,34 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 {
     private readonly ColorParsingCoordinator _colorParsingCoordinator;
     private readonly NamedColorManager _namedColorManager = new();
+    private readonly HelpPage _helpPageInstance = new();
+    private readonly ListItem _helpPageItem;
+    private readonly IListItem[] _emptyItems;
 
     public ColorsExtensionPage()
     {
         this.Icon = Icons.ColorWheel;
         this.Title = Strings.Colors!;
         this.Name = Strings.Open!;
-        this.PlaceholderText = "Type color code or name (e.g. #FFCC00 or red)...";
+        this.PlaceholderText = "Enter a color code (e.g., #FFCC00) or name (e.g., red), or type “/” for more options";
 
         this._colorParsingCoordinator = new ColorParsingCoordinator(this._namedColorManager);
+
+        this._helpPageItem = new ListItem(this._helpPageInstance)
+        {
+            Icon = Icons.Colorful.Question,
+            Title = "Show help",
+            Subtitle = "Learn how to use the color extension, including available commands and options",
+        };
+
+        this._emptyItems = [this._helpPageItem];
     }
 
     protected override Task<IListItem[]> LoadInitialItemsAsync(CancellationToken cancellationToken)
     {
-        IListItem[] initialItems = [];
-
-        this.EmptyContent = new CommandItem(new NoOpCommand())
-        {
-            Icon = Icons.ColorWheelLarge,
-            Title = Strings.ColorSearchPlaceholder!
-        };
-
-        return Task.FromResult(initialItems);
+        return Task.FromResult(this._emptyItems);
     }
-    
+
     protected override async Task<IListItem[]> SearchItemsAsync(string previousText, string searchText, CancellationToken cancellationToken)
     {
         var cursorPosition = TextUtilities.FindLastCommonStringIndex(previousText, searchText);
@@ -50,11 +55,6 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
         if (queryParserResult.HasSuggestions)
         {
             var suggestionItems = queryParserResult.Context.Suggestions.Select(suggestion => new InputSuggestionListItem(suggestion, this)).ToList();
-            if (queryParserResult.Context.Suggestions.Any(static t => t.Type == SuggestionType.Value))
-            {
-                // Add a command to cancel value the suggestions.
-                // We can remember the current query and don't display suggestions again for it until the user types something else.
-            }
             return [.. suggestionItems];
         }
 
@@ -69,31 +69,68 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
             result.AddRange(queryParserResult.Context.Warnings.Select(static warning => new InputWarningListItem(warning)));
         }
 
-        var combinedParserResult = this._colorParsingCoordinator.Parse(queryParserResult.Query, queryParserResult.Options.Palette);
-
-        var colorResults = combinedParserResult.Strategy switch
+        if (queryParserResult.Options.ShowHelp)
         {
-            CombinedParseStrategy.ExactMatch => await this.SingleColorResults(combinedParserResult.ExactResult!.Color!),
-            CombinedParseStrategy.AutoSelectNamed => await this.SingleColorResults(new Unicolour(ColourSpace.Rgb255,
-                combinedParserResult.NamedResult!.BestMatch!.Rgb!.Value.R,
-                combinedParserResult.NamedResult.BestMatch.Rgb.Value.G,
-                combinedParserResult.NamedResult.BestMatch.Rgb.Value.B)),
-            CombinedParseStrategy.ShowNamedOptions => this.SelectColorResults(combinedParserResult.NamedResult!.AllMatches),
-            _ => this.NoMatchResults()
-        };
-        result.AddRange(colorResults);
+            result.Add(this._helpPageItem);
+        }
+        else
+        {
+            var combinedParserResult = this._colorParsingCoordinator.Parse(queryParserResult.Query, queryParserResult.Options.Palette);
+
+            var colorResults = combinedParserResult.Strategy switch
+            {
+                CombinedParseStrategy.ExactMatch => await this.SingleColorResults(combinedParserResult.ExactResult!.Color!),
+                CombinedParseStrategy.AutoSelectNamed => await this.SingleColorResults(new Unicolour(ColourSpace.Rgb255,
+                    combinedParserResult.NamedResult!.BestMatch!.Rgb!.Value.R,
+                    combinedParserResult.NamedResult.BestMatch.Rgb.Value.G,
+                    combinedParserResult.NamedResult.BestMatch.Rgb.Value.B)),
+                CombinedParseStrategy.ShowNamedOptions => this.SelectColorResults(combinedParserResult.NamedResult!.AllMatches),
+                _ => this.NoMatchResults(queryParserResult.Options)
+            };
+            result.AddRange(colorResults);
+        }
 
         return [.. result];
     }
 
-    private IListItem[] NoMatchResults()
+    private IListItem[] NoMatchResults(ColorQueryOptions currentOptions)
     {
-        this.EmptyContent = new CommandItem(new NoOpCommand())
+        if (!string.IsNullOrWhiteSpace(currentOptions.Palette))
         {
-            Icon = Icons.ColorWheelLarge,
-            Title = Strings.ColorNotRecognized!
-        };
-        return [];
+            var palette = this._namedColorManager.ListRegisteredColorSets().FirstOrDefault(t => t.Id == currentOptions.Palette);
+
+            var searchTextWithoutPaletteSwitch = TextUtilities.RemoveSwitches(this.SearchText, "palette");
+
+            return
+            [
+                new ListItem(this._helpPageInstance)
+                {
+                    Title = $"No color found matching the input in palette {palette?.Name ?? "???"}",
+                    Subtitle = "Try selecting a different palette, entering a different color code or name, or type “/” for more options",
+                    Icon = Icons.Emojis.CryingFace
+                },
+                new ListItem(new UpdateSearchTextCommand(searchTextWithoutPaletteSwitch, this))
+                {
+                    Title = "Search all palettes",
+                    Subtitle = "Remove palette switch to search all colors",
+                    Icon = Icons.Colorful.Suggestion
+                },
+                this._helpPageItem
+            ];
+        }
+        else
+        {
+            return
+            [
+                new ListItem(this._helpPageInstance)
+                {
+                    Title = "No color found matching the input",
+                    Subtitle = "Try entering a different color code or name, or type “/” for more options",
+                    Icon = Icons.Emojis.CryingFace
+                },
+                this._helpPageItem,
+            ];
+        }
     }
 
     private IListItem[] SelectColorResults(List<NamedColorResult> matches)
