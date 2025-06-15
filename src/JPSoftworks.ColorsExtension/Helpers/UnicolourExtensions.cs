@@ -4,6 +4,7 @@
 // 
 // ------------------------------------------------------------
 
+using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers;
@@ -47,5 +48,10 @@ internal static class UnicolourExtensions
         }
 
         return shades;
+    }
+
+    public static RgbColor ToRgbColor(this Unicolour unicolour)
+    {
+        return new RgbColor(unicolour.Rgb.Byte255.R, unicolour.Rgb.Byte255.G, unicolour.Rgb.Byte255.B);
     }
 }

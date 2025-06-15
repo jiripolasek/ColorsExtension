@@ -21,14 +21,14 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
     private readonly NamedColorManager _namedColorManager = new();
     private readonly HelpPage _helpPageInstance = new();
     private readonly ListItem _helpPageItem;
-    private readonly IListItem[] _emptyItems;
+    private IListItem[]? _emptyItems;
 
     public ColorsExtensionPage()
     {
         this.Icon = Icons.ColorWheel;
         this.Title = Strings.Colors!;
         this.Name = Strings.Open!;
-        this.PlaceholderText = "Enter a color code (e.g., #FFCC00) or name (e.g., red), or type “/” for more options";
+        this.PlaceholderText = "Type a color code or color name (e.g., #FFCC00 or red) or type “/” for more options";
 
         this._colorParsingCoordinator = new ColorParsingCoordinator(this._namedColorManager);
 
@@ -38,12 +38,25 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
             Title = "Show help",
             Subtitle = "Learn how to use the color extension, including available commands and options",
         };
-
-        this._emptyItems = [this._helpPageItem];
     }
 
     protected override Task<IListItem[]> LoadInitialItemsAsync(CancellationToken cancellationToken)
     {
+        this._emptyItems ??= [
+            this._helpPageItem,
+            new ListItem(new FavoriteColorsPage(this))
+            {
+                Icon = Icons.Colorful.Favorite,
+                Title = "Favorite colors",
+                Subtitle = "Browse your favorite colors"
+            },
+            new ListItem(new RecentColorsPage(this))
+            {
+                Icon = Icons.Colorful.History,
+                Title = "Recent colors",
+                Subtitle = "List of recently copied colors"
+            }];
+
         return Task.FromResult(this._emptyItems);
     }
 

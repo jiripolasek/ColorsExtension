@@ -72,7 +72,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
             }
         }
 
-        this.ScheduleSearchUpdate(oldSearch, newSearch);
+        this.ScheduleSearchUpdate(this._lastSearchText, newSearch);
     }
 
     private void ScheduleSearchUpdate(string previousText, string searchText)
@@ -151,7 +151,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    this.UpdateItems(newItems);
+                    this.UpdateItems(newItems ?? []);
 
                     lock (this._searchLock)
                     {

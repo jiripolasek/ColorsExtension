@@ -4,6 +4,7 @@
 // 
 // ------------------------------------------------------------
 
+using JPSoftworks.ColorsExtension.Commands;
 using JPSoftworks.ColorsExtension.Helpers;
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -13,8 +14,8 @@ namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class SelectColorListItem : ListItem
 {
-    private readonly NamedColorResult _colorResult;
     private readonly DynamicListPage _listPage;
+    private readonly string _query;
 
     public SelectColorListItem(DynamicListPage listPage, NamedColorResult colorResult)
     {
@@ -22,15 +23,19 @@ internal sealed partial class SelectColorListItem : ListItem
         ArgumentNullException.ThrowIfNull(colorResult);
 
         this._listPage = listPage;
-        this._colorResult = colorResult;
         this.Command = new AnonymousCommand(this.Action)
         {
-            Result = CommandResult.GoToPage(new GoToPageArgs { PageId = this._listPage.Id })
+            Result = CommandResult.GoToPage(new GoToPageArgs { PageId = this._listPage.Id }),
+            Name = "Show details",
         };
-        this.Title = this._colorResult.GetQualifiedName();
+        this.Title = colorResult.GetQualifiedName();
         this.Subtitle = BuildSubtitle(colorResult.Rgb!.Value);
         this.Tags = [new Tag(colorResult.ColorSetObject?.Name!) { Icon = Icons.ColorPalette }];
         _ = this.SetIconAsync(colorResult.Rgb!.Value);
+        this._query = colorResult.GetQueryName();
+        this.MoreCommands = [
+            new CommandContextItem(new AddToFavoritesCommand(this.Title, colorResult.Rgb.Value))
+        ];
     }
 
     internal static string BuildSubtitle(RgbColor rgb)
@@ -41,14 +46,12 @@ internal sealed partial class SelectColorListItem : ListItem
 
     private async Task SetIconAsync(RgbColor rgbColor)
     {
-        var iconStream
-            = await BitmapStreamFactory.CreateRoundedColorStreamAsync((byte)rgbColor.R, (byte)rgbColor.G,
-                (byte)rgbColor.B);
+        var iconStream = await BitmapStreamFactory.CreateRoundedColorStreamAsync(rgbColor.R, rgbColor.G, rgbColor.B);
         this.Icon = IconInfo.FromStream(iconStream!);
     }
 
     private void Action()
     {
-        this._listPage.SearchText = this._colorResult.GetQueryName();
+        this._listPage.SearchText = this._query;
     }
 }

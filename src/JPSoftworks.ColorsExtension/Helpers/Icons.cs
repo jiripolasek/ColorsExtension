@@ -27,6 +27,8 @@ internal static class Icons
 
     internal static IconInfo ColorPalette { get; } = new("\uE790");
 
+    internal static IconInfo Delete { get; } = new("\uE711");
+
     [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
     internal static class Colorful
     {
@@ -39,6 +41,10 @@ internal static class Icons
         internal static IconInfo Suggestion { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorLightbulbFilament20.svg");
 
         internal static IconInfo Edit { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorEdit20.svg");
+
+        internal static IconInfo History { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorHistory20.svg");
+
+        internal static IconInfo Favorite { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorHeart20.svg");
     }
 
     internal static class Emojis
