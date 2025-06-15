@@ -21,7 +21,9 @@ public class AnyColorParser
         new HslModernColorParser(),
         new HwbModernColorParser(),
         new LabModernColorParser(),
-        new LchModernColorParser()
+        new LchModernColorParser(),
+
+        new CmykModernColorParser(),
     ];
 
     public ColorParseResult Parse(string input)

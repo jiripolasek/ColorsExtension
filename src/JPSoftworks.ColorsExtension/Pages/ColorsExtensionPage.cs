@@ -173,6 +173,7 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
             await ColorListItem.CreateAsync(color, ParsedColorFormat.HwbModern),
             await ColorListItem.CreateAsync(color, ParsedColorFormat.LchModern),
             await ColorListItem.CreateAsync(color, ParsedColorFormat.LabModern),
+            await ColorListItem.CreateAsync(color, ParsedColorFormat.CmykModern),
 
             // gradients
             .. await BuildBasicGradientAsync(color),

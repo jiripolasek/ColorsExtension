@@ -29,7 +29,8 @@ public class AnyColorFormatter
             { ParsedColorFormat.HwbModern, new HwbModernColorFormatter() },
             { ParsedColorFormat.LabModern, new LabModernColorFormatter() },
             { ParsedColorFormat.LchModern, new LchModernColorFormatter() },
-            { ParsedColorFormat.NamedColor, new NamedColorFormatter() }
+            { ParsedColorFormat.NamedColor, new NamedColorFormatter() },
+            { ParsedColorFormat.CmykModern, new CmykModernColorFormatter() }
         };
     }
 

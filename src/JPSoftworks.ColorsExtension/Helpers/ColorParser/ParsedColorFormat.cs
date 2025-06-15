@@ -20,5 +20,6 @@ public enum ParsedColorFormat
     LabModern, // lab(l% a b) or lab(l% a b / alpha) - CSS Level 4
     LchModern, // lch(l% c h) or lch(l% c h / alpha) - CSS Level 4
     RgbPlain, // "r, g, b" or "r,g,b,a" or "r g b" or "r g b / a" without function syntax
-    HexWithoutHash // RGB or RGBA without # prefix
+    HexWithoutHash, // RGB or RGBA without # prefix
+    CmykModern
 }

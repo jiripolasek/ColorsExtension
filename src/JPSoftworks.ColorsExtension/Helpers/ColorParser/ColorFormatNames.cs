@@ -23,7 +23,8 @@ internal static class ColorFormatNames
         { ParsedColorFormat.HwbModern, "HWB" },
         { ParsedColorFormat.LabModern, "LAB" },
         { ParsedColorFormat.LchModern, "LCH" },
-        { ParsedColorFormat.NamedColor, "Named" }
+        { ParsedColorFormat.NamedColor, "Named" },
+        { ParsedColorFormat.CmykModern, "CMYK" }
     };
 
     // Alternative display names for when you want shorter labels
@@ -41,7 +42,8 @@ internal static class ColorFormatNames
         { ParsedColorFormat.HwbModern, "HWB" },
         { ParsedColorFormat.LabModern, "LAB" },
         { ParsedColorFormat.LchModern, "LCH" },
-        { ParsedColorFormat.NamedColor, "Name" }
+        { ParsedColorFormat.NamedColor, "Name" },
+        { ParsedColorFormat.CmykModern, "CMYK" }
     };
 
     // Get the user-friendly name for a format
