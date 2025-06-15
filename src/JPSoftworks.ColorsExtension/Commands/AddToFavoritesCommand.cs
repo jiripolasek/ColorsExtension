@@ -23,7 +23,7 @@ internal sealed partial class AddToFavoritesCommand : InvokableCommand
         this._color = color;
         this._favoriteColorsManager = FavoritesColorsManager.Instance;
         this.Name = "Add to favorites";
-        this.Icon = Icons.Colorful.Favorite;
+        this.Icon = Icons.Colorful.AddFavorite;
     }
 
     public override ICommandResult Invoke()

@@ -45,6 +45,8 @@ internal static class Icons
         internal static IconInfo History { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorHistory20.svg");
 
         internal static IconInfo Favorite { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\FluentColorHeart20.svg");
+
+        internal static IconInfo AddFavorite { get; } = IconHelpers.FromRelativePath("Assets\\Icons\\ExtraFluentColorHeartPlus20.svg");
     }
 
     internal static class Emojis
