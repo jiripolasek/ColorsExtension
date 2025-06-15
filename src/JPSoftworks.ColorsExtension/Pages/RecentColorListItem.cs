@@ -48,7 +48,7 @@ internal sealed partial class RecentColorListItem : ListItem
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B, 0)
             },
-            new CommandContextItem(new AnonymousCommand(this.DeleteRecentColor) { Result = CommandResult.KeepOpen(), Icon = Icons.Delete, Name = "Delete" } )
+            new CommandContextItem(new AnonymousCommand(this.DeleteRecentColor) { Result = CommandResult.KeepOpen(), Icon = Icons.Delete, Name = "Remove from recent colors" } )
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, false, true, false, (int)VirtualKey.Delete),
             }

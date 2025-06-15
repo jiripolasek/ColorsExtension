@@ -43,7 +43,7 @@ internal sealed partial class FavoriteColorListItem : ListItem
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
             },
-            new CommandContextItem(new AnonymousCommand(this.DeleteFavoriteColor) { Result = CommandResult.KeepOpen(), Icon = Icons.Delete, Name = "Delete" } )
+            new CommandContextItem(new AnonymousCommand(this.DeleteFavoriteColor) { Result = CommandResult.KeepOpen(), Icon = Icons.Delete, Name = "Remove from favorites" } )
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, false, true, false, (int)VirtualKey.Delete),
             }
