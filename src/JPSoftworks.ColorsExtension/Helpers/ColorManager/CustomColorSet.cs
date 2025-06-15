@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-internal class CustomColorSet : IColorSet
+internal sealed class CustomColorSet : IColorSet
 {
     public string Id { get; }
     public string Name { get; }

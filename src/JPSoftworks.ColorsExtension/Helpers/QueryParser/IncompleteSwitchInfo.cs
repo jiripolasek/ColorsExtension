@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.QueryParser;
 
-internal record IncompleteSwitchInfo(
+internal sealed record IncompleteSwitchInfo(
     string PartialName,
     bool HasSeparator,
     string? PartialValue,

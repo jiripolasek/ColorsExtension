@@ -6,14 +6,13 @@
 
 using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 using JPSoftworks.ColorsExtension.Helpers.ColorParser;
-using JPSoftworks.ColorsExtension.Helpers.QueryParser;
 
 namespace JPSoftworks.ColorsExtension.Helpers;
 
 /// <summary>
 /// Top level parsing of input representing color.
 /// </summary>
-internal class ColorParsingCoordinator
+internal sealed class ColorParsingCoordinator
 {
     private readonly NamedColorManager _namedColorManager;
     private readonly AnyColorParser _exactParser;

@@ -21,12 +21,12 @@ public record ParseResult<TOptions>(
         var result = $"Query: '{this.Query}', {this.Options}";
         if (this.HasErrors)
         {
-            result += $", Errors: [{string.Join("; ", this.Errors.Select(e => e.Message))}]";
+            result += $", Errors: [{string.Join("; ", this.Errors.Select(static e => e.Message))}]";
         }
 
         if (this.HasWarnings)
         {
-            result += $", Warnings: [{string.Join("; ", this.Context.Warnings.Select(w => w.Message))}]";
+            result += $", Warnings: [{string.Join("; ", this.Context.Warnings.Select(static w => w.Message))}]";
         }
 
         if (this.HasSuggestions)

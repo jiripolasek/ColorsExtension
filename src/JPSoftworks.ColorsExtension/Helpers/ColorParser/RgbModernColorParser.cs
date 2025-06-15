@@ -43,7 +43,7 @@ public class RgbModernColorParser : IColorParser
 
     private static double ParseValueOrPercentage(string value, double maxValue)
     {
-        if (value.EndsWith("%"))
+        if (value.EndsWith('%'))
         {
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture) / 100.0;
         }

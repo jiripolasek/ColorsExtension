@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.QueryParser;
 
-internal class SwitchParseContext
+internal sealed class SwitchParseContext
 {
     public List<Suggestion> CurrentSuggestions { get; } = [];
 }

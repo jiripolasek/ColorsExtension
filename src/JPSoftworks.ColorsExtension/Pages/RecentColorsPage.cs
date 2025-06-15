@@ -50,9 +50,13 @@ internal sealed partial class RecentColorsPage : ListPage, IDisposable
             return [];
         }
 
-        return [.. from colorHistoryEntry in this._historyManager.GetColorHistoryEntries().Reverse()
-            let rgb = new RgbColor(colorHistoryEntry.R, colorHistoryEntry.G, colorHistoryEntry.B)
-            select new RecentColorListItem(this._colorsPage, colorHistoryEntry?.Query, colorHistoryEntry.Value, rgb)
+        return [
+            .. from colorHistoryEntry in this._historyManager.GetColorHistoryEntries().Reverse()
+            select new RecentColorListItem(
+                this._colorsPage,
+                colorHistoryEntry.Query,
+                colorHistoryEntry.Value,
+                new RgbColor(colorHistoryEntry.R, colorHistoryEntry.G, colorHistoryEntry.B))
             ];
     }
 

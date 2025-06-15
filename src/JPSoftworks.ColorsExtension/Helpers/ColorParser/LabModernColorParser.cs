@@ -43,7 +43,7 @@ public class LabModernColorParser : IColorParser
 
     private static double ParseLightness(string value)
     {
-        if (value.EndsWith("%"))
+        if (value.EndsWith('%'))
         {
             // For L* in LAB, 0% = 0, 100% = 100
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture);

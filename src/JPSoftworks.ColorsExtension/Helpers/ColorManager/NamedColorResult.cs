@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-internal class NamedColorResult
+internal sealed class NamedColorResult
 {
     public bool Success { get; }
     public string? ColorName { get; }

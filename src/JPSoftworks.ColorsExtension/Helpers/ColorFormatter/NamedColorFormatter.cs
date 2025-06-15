@@ -10,7 +10,7 @@ using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorFormatter;
 
-internal class NamedColorFormatter : IColorFormatter
+internal sealed class NamedColorFormatter : IColorFormatter
 {
     private readonly NamedColorManager _colorManager;
     private readonly bool _includeSetName;

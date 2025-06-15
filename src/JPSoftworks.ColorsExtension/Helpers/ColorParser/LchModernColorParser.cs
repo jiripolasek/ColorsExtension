@@ -43,7 +43,7 @@ public class LchModernColorParser : IColorParser
 
     private static double ParseLightness(string value)
     {
-        if (value.EndsWith("%"))
+        if (value.EndsWith('%'))
         {
             // For L* in LCH, 0% = 0, 100% = 100
             return double.Parse(value.TrimEnd('%'), CultureInfo.InvariantCulture);

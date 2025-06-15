@@ -42,11 +42,11 @@ internal sealed partial class RecentColorListItem : ListItem
         [
             new CommandContextItem(new CopyAndSaveColorCommand(value ?? hexColor, rgbColor))
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
+                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C)
             },
             new CommandContextItem(new AddToFavoritesCommand(this.Title, rgbColor))
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B, 0)
+                RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B)
             },
             new CommandContextItem(new AnonymousCommand(this.DeleteRecentColor) { Result = CommandResult.KeepOpen(), Icon = Icons.Delete, Name = "Remove from recent colors" } )
             {

@@ -8,7 +8,7 @@ using FuzzySharp;
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-internal class NamedColorManager
+internal sealed class NamedColorManager
 {
     private const double NameWeight = 0.7;
     private const double PaletteWeight = 0.3;
@@ -235,5 +235,5 @@ internal class NamedColorManager
 
     public ICollection<IColorSet> ListRegisteredColorSets() => this._colorSets;
 
-    record SearchEntry(string ColorName, string SearchKey, IColorSet ColorSet, RgbColor Color);
+    sealed record SearchEntry(string ColorName, string SearchKey, IColorSet ColorSet, RgbColor Color);
 }

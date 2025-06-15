@@ -8,7 +8,7 @@ using JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
 namespace JPSoftworks.ColorsExtension.Helpers;
 
-internal class NamedColorResolveResult
+internal sealed class NamedColorResolveResult
 {
     public bool HasResults { get; }
     public NamedColorResult? BestMatch { get; }

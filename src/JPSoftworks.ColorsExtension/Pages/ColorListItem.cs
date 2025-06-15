@@ -31,11 +31,11 @@ internal sealed partial class ColorListItem : ListItem
         [
             new CommandContextItem(new AddToFavoritesCommand(this.Title, color.ToRgbColor()))
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B, 0)
+                RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B)
             },
             new CommandContextItem(new CopyAndSaveColorCommand(this.Title, color) { Name = "Copy " + this.Title})
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
+                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C)
             }
         ];
     }
@@ -52,7 +52,7 @@ internal sealed partial class ColorListItem : ListItem
             new CommandContextItem(new AddToFavoritesCommand(text, color.ToRgbColor())),
             new CommandContextItem(new CopyAndSaveColorCommand(text, color))
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
+                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C)
             }
         ];
     }

@@ -11,15 +11,14 @@ using Wacton.Unicolour;
 
 namespace JPSoftworks.ColorsExtension.Commands;
 
-internal sealed class CopyAndSaveColorCommand : InvokableCommand
+internal sealed partial class CopyAndSaveColorCommand : InvokableCommand
 {
     private readonly HistoryManager _historyManager = HistoryManager.Instance;
     private readonly RgbColor _color;
     private readonly string _query;
 
     private CommandResult Result { get; } = CommandResult.ShowToast("Copied to clipboard");
-
-
+    
     public CopyAndSaveColorCommand(string query, RgbColor color)
     {
         this._color = color;

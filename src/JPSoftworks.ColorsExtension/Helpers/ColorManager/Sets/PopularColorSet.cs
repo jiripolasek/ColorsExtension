@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-internal class PopularColorSet : IColorSet
+internal sealed class PopularColorSet : IColorSet
 {
     private readonly Dictionary<string, RgbColor> _colors
         = new(StringComparer.OrdinalIgnoreCase)

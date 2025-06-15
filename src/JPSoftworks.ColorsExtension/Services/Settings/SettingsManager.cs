@@ -11,8 +11,6 @@ namespace JPSoftworks.ColorsExtension.Services.Settings;
 
 public sealed class SettingsManager : JsonSettingsManager
 {
-    private const string DefaultNamespace = "jpsoftworks.colors";
-
     public SettingsManager()
     {
         this.Settings.Add(new TextBlockSetting
@@ -36,10 +34,8 @@ public sealed class SettingsManager : JsonSettingsManager
 
         this.FilePath = SettingsJsonPath();
         this.LoadSettings();
-        this.Settings.SettingsChanged += (s, a) => this.SaveSettings();
+        this.Settings.SettingsChanged += (_, _) => this.SaveSettings();
     }
-
-    private static string Namespaced(string propertyName) => $"{DefaultNamespace}.{propertyName}";
 
     private static string SettingsJsonPath()
     {
@@ -49,9 +45,9 @@ public sealed class SettingsManager : JsonSettingsManager
     }
 }
 
-public sealed partial class TextBlockSetting : Setting<string>
+public sealed class TextBlockSetting : Setting<string>
 {
-    public bool IsSubtle { get; set; }
+    public bool IsSubtle { get; init; }
 
     public TextBlockSetting() : base(Guid.NewGuid().ToString(), "", "", "")
     {

@@ -8,7 +8,7 @@ using JPSoftworks.ColorsExtension.Helpers.ColorParser;
 
 namespace JPSoftworks.ColorsExtension.Helpers;
 
-internal class CombinedParseResult
+internal sealed class CombinedParseResult
 {
     public bool HasExactMatch { get; }
     public ColorParseResult? ExactResult { get; }
@@ -25,7 +25,7 @@ internal class CombinedParseResult
 
         this.Strategy = this.HasExactMatch ? CombinedParseStrategy.ExactMatch :
             namedResult!.AllMatches.Count == 1 ? CombinedParseStrategy.AutoSelectNamed :
-            namedResult?.HasResults == true ? CombinedParseStrategy.ShowNamedOptions :
+            namedResult.HasResults ? CombinedParseStrategy.ShowNamedOptions :
             CombinedParseStrategy.NoMatch;
     }
 }

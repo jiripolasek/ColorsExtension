@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-internal class PantoneColorSet : IColorSet
+internal sealed class PantoneColorSet : IColorSet
 {
     private readonly Dictionary<string, RgbColor> _colors
         = new(StringComparer.OrdinalIgnoreCase)

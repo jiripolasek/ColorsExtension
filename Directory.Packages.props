@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="FuzzySharp" Version="2.0.2" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageVersion Include="JPSoftworks.CommandPalette.Extensions.Toolkit" Version="0.0.2" />
     <PackageVersion Include="Microsoft.CommandPalette.Extensions" Version="0.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24508.2" />

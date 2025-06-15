@@ -26,13 +26,45 @@ internal sealed class FavoritesColorsManager
             try
             {
                 var json = File.ReadAllText(this.FilePath);
-                this._model = JsonSerializer.Deserialize<FavoriteColors>(json, FavoritesSourceGenerationContext.Default.Options) ?? new FavoriteColors([]);
+                var model = JsonSerializer.Deserialize<FavoriteColors>(json, FavoritesSourceGenerationContext.Default.Options) ?? new FavoriteColors([]);
+                this._model = Repair(model);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
                 this._model = new FavoriteColors([]);
             }
+        }
+
+        return;
+
+        static FavoriteColors Repair(FavoriteColors model)
+        {
+            // Ensure that Favorites collection is never null
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (model.Favorites == null)
+            {
+                return new FavoriteColors([]);
+            }
+
+            for (int i = 0; i < model.Favorites.Count; i++)
+            {
+                var item = model.Favorites[i];
+
+                if (!string.IsNullOrEmpty(item.Value) && !string.IsNullOrEmpty(item.Query))
+                {
+                    continue;
+                }
+
+                var hexColorCode = $"#{item.R:X2}{item.G:X2}{item.B:X2}";
+                model.Favorites[i] = item with
+                {
+                    Value = string.IsNullOrEmpty(item.Value) ? hexColorCode : item.Value,
+                    Query = string.IsNullOrEmpty(item.Query) ? hexColorCode : item.Query
+                };
+            }
+
+            return model;
         }
     }
 

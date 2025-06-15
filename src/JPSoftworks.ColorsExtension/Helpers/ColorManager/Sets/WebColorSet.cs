@@ -9,7 +9,7 @@ namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 /// <summary>
 /// CSS Level 1-3 Web Colors
 /// </summary>
-internal class WebColorSet : IColorSet
+internal sealed class WebColorSet : IColorSet
 {
     private readonly Dictionary<string, RgbColor> _colors = new(StringComparer.OrdinalIgnoreCase)
     {

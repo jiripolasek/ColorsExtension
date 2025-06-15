@@ -101,7 +101,7 @@ internal static class BitmapStreamFactory
 
             // 3) Encode to PNG
             var stream = new InMemoryRandomAccessStream();
-            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream)!;
 
             encoder.SetPixelData(
                 BitmapPixelFormat.Bgra8,
@@ -110,7 +110,7 @@ internal static class BitmapStreamFactory
                 96, 96,
                 pixels);
 
-            await encoder.FlushAsync();
+            await encoder.FlushAsync()!;
             stream.Seek(0);
             return stream;
         }

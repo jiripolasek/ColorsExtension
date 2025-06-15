@@ -9,7 +9,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
-internal abstract class AsyncDynamicListPage : DynamicListPage
+internal abstract class AsyncDynamicListPage : DynamicListPage, IDisposable
 {
     private const int DebounceDelayMs = 300;
     private readonly Lock _itemsLock = new();
@@ -22,12 +22,10 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
     private IListItem[]? _lastSearchResults;
 
     private string _lastSearchText = "";
-    private CancellationTokenSource _updateCancellationSource;
+    private CancellationTokenSource _updateCancellationSource = new();
 
     protected AsyncDynamicListPage()
     {
-        this._updateCancellationSource = new CancellationTokenSource();
-
         _ = Task.Run(async () =>
         {
             try
@@ -151,7 +149,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    this.UpdateItems(newItems ?? []);
+                    this.UpdateItems(newItems);
 
                     lock (this._searchLock)
                     {
@@ -190,6 +188,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
             return;
         }
 
+        // ReSharper disable once InconsistentlySynchronizedField
         if (ReferenceEquals(this._currentItems, newItems))
         {
             return;
@@ -203,7 +202,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
 
             if (oldItems.Length != newItems.Length)
             {
-                this._currentItems = newItems ?? [];
+                this._currentItems = newItems;
                 itemsChanged = true;
             }
             else
@@ -234,11 +233,6 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
         }
     }
 
-    public override void LoadMore()
-    {
-        base.LoadMore();
-    }
-
     private void SetLoadingState(bool isLoading)
     {
         this.IsLoading = isLoading;
@@ -267,12 +261,12 @@ internal abstract class AsyncDynamicListPage : DynamicListPage
             this._debounceTimer?.Dispose();
             this._debounceTimer = null;
 
-            this._updateCancellationSource?.Cancel();
-            this._updateCancellationSource?.Dispose();
-            this._updateCancellationSource = null;
+            this._updateCancellationSource.Cancel();
+            this._updateCancellationSource.Dispose();
 
-            this._updateSemaphore?.Dispose();
+            this._updateSemaphore.Dispose();
 
+            // ReSharper disable once InconsistentlySynchronizedField
             this._currentItems = [];
             this._lastSearchResults = null;
         }

@@ -4,6 +4,7 @@
 // 
 // ------------------------------------------------------------
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 
@@ -27,12 +28,12 @@ public class RgbColorParser : IColorParser
 
         try
         {
-            var r = int.Parse(match.Groups[1].Value) / 255.0;
-            var g = int.Parse(match.Groups[2].Value) / 255.0;
-            var b = int.Parse(match.Groups[3].Value) / 255.0;
+            var r = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+            var g = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            var b = int.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
 
             // Ignore alpha for now as requested
-            return ColorParseResult.Ok(new Unicolour(ColourSpace.Rgb, r, g, b), ParsedColorFormat.Rgb);
+            return ColorParseResult.Ok(new Unicolour(ColourSpace.Rgb255, r, g, b), ParsedColorFormat.Rgb);
         }
         catch (Exception ex)
         {

@@ -24,24 +24,22 @@ internal sealed partial class FavoriteColorListItem : ListItem
 
         this._listPage = listPage;
         this._favoriteColorEntry = favoriteColorEntry;
-        var rgbColor = new RgbColor(_favoriteColorEntry.R, _favoriteColorEntry.G, this._favoriteColorEntry.B);
-        var hexColor = $"#{rgbColor.R:X2}{rgbColor.G:X2}{rgbColor.B:X2}";
-
         this.Command = new AnonymousCommand(this.Action)
         {
             Icon = Icons.Info,
             Result = CommandResult.GoBack(), // Hack: GoBack command because I can't get back to the previous page
             Name = "Show details"
         };
-        this.Title = this._favoriteColorEntry.Query ?? this._favoriteColorEntry.Value ?? $"Color {rgbColor}";
+        this.Title = this._favoriteColorEntry.Query;
+        var rgbColor = new RgbColor(this._favoriteColorEntry.R, this._favoriteColorEntry.G, this._favoriteColorEntry.B);
         this.Subtitle = SelectColorListItem.BuildSubtitle(rgbColor);
         _ = this.SetIconAsync(rgbColor);
 
         this.MoreCommands =
         [
-            new CommandContextItem(new CopyAndSaveColorCommand(this._favoriteColorEntry.Value ?? hexColor, rgbColor))
+            new CommandContextItem(new CopyAndSaveColorCommand(this._favoriteColorEntry.Value, rgbColor))
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
+                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C)
             },
             new CommandContextItem(new AnonymousCommand(this.DeleteFavoriteColor) { Result = CommandResult.KeepOpen(), Icon = Icons.Delete, Name = "Remove from favorites" } )
             {

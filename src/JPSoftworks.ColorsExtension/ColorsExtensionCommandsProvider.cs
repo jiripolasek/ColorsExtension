@@ -47,7 +47,7 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
         return this._commands;
     }
 
-    public override IFallbackCommandItem[]? FallbackCommands()
+    public override IFallbackCommandItem[] FallbackCommands()
     {
         return this._fallbackCommands;
     }

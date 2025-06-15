@@ -6,7 +6,7 @@
 
 namespace JPSoftworks.ColorsExtension.Helpers.ColorManager;
 
-internal class MaterialColorSet : IColorSet
+internal sealed class MaterialColorSet : IColorSet
 {
     private readonly Dictionary<string, RgbColor> _colors
         = new(StringComparer.OrdinalIgnoreCase)

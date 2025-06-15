@@ -28,7 +28,7 @@ public class RgbPlainColorParser : IColorParser
     public ColorParseResult TryParse(string input)
     {
         // Skip if it looks like a function call
-        if (input.Contains("(", StringComparison.InvariantCultureIgnoreCase))
+        if (input.Contains('(', StringComparison.InvariantCultureIgnoreCase))
         {
             return ColorParseResult.Fail($"Not a plain RGB format: {input}");
         }
