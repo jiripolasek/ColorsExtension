@@ -43,19 +43,19 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
     protected override Task<IListItem[]> LoadInitialItemsAsync(CancellationToken cancellationToken)
     {
         this._emptyItems ??= [
-            this._helpPageItem,
+            new ListItem(new RecentColorsPage(this))
+            {
+                Icon = Icons.Colorful.History,
+                Title = "Recent colors",
+                Subtitle = "List of recently copied colors"
+            },
             new ListItem(new FavoriteColorsPage(this))
             {
                 Icon = Icons.Colorful.Favorite,
                 Title = "Favorite colors",
                 Subtitle = "Browse your favorite colors"
             },
-            new ListItem(new RecentColorsPage(this))
-            {
-                Icon = Icons.Colorful.History,
-                Title = "Recent colors",
-                Subtitle = "List of recently copied colors"
-            }];
+            this._helpPageItem];
 
         return Task.FromResult(this._emptyItems);
     }
@@ -98,7 +98,7 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
                     combinedParserResult.NamedResult.BestMatch.Rgb.Value.G,
                     combinedParserResult.NamedResult.BestMatch.Rgb.Value.B)),
                 CombinedParseStrategy.ShowNamedOptions => this.SelectColorResults(combinedParserResult.NamedResult!.AllMatches),
-                _ => this.NoMatchResults(queryParserResult.Options)
+                _ => this.NoMatchResults(queryParserResult)
             };
             result.AddRange(colorResults);
         }
@@ -106,14 +106,18 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
         return [.. result];
     }
 
-    private IListItem[] NoMatchResults(ColorQueryOptions currentOptions)
+    private IListItem[] NoMatchResults(ParseResult<ColorQueryOptions> queryParserResult)
     {
-        if (!string.IsNullOrWhiteSpace(currentOptions.Palette))
+        if (string.IsNullOrWhiteSpace(queryParserResult.Query))
         {
-            var palette = this._namedColorManager.ListRegisteredColorSets().FirstOrDefault(t => t.Id == currentOptions.Palette);
+            return this._emptyItems!;
+        }
 
+        if (!string.IsNullOrWhiteSpace(queryParserResult.Options.Palette))
+        {
+            var palette = this._namedColorManager.ListRegisteredColorSets().FirstOrDefault(t => t.Id == queryParserResult.Options.Palette);
             var searchTextWithoutPaletteSwitch = TextUtilities.RemoveSwitches(this.SearchText, "palette");
-
+            
             return
             [
                 new ListItem(this._helpPageInstance)
