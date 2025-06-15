@@ -40,7 +40,10 @@ internal sealed partial class RecentColorListItem : ListItem
 
         this.MoreCommands =
         [
-            new CommandContextItem(new CopyAndSaveColorCommand(value ?? hexColor, rgbColor)),
+            new CommandContextItem(new CopyAndSaveColorCommand(value ?? hexColor, rgbColor))
+            {
+                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)
+            },
             new CommandContextItem(new AddToFavoritesCommand(this.Title, rgbColor))
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B, 0)
