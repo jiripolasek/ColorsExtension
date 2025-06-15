@@ -17,11 +17,10 @@ public class LabModernColorFormatter : IColorFormatter
     public string Format(Unicolour color)
     {
         var lab = color.Lab;
-        var l = Math.Round(lab.L, 1);
-        var a = Math.Round(lab.A, 1);
-        var b = Math.Round(lab.B, 1);
+        var l = Math.Round(lab.L, 2);
+        var a = Math.Round(lab.A, 2);
+        var b = Math.Round(lab.B, 2);
 
-        return
-            $"lab({l.ToString(CultureInfo.InvariantCulture)}% {a.ToString(CultureInfo.InvariantCulture)} {b.ToString(CultureInfo.InvariantCulture)})";
+        return string.Format(CultureInfo.InvariantCulture, "lab({0}% {1} {2})", l, a, b);
     }
 }

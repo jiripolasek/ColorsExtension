@@ -17,11 +17,10 @@ public class LchModernColorFormatter : IColorFormatter
     public string Format(Unicolour color)
     {
         var lch = color.Lchab;
-        var l = Math.Round(lch.L, 1);
-        var c = Math.Round(lch.C, 1);
-        var h = Math.Round(lch.H, 1);
+        var l = Math.Round(lch.L, 2);
+        var c = Math.Round(lch.C, 2);
+        var h = Math.Round(lch.H, 2);
 
-        return
-            $"lch({l.ToString(CultureInfo.InvariantCulture)}% {c.ToString(CultureInfo.InvariantCulture)} {h.ToString(CultureInfo.InvariantCulture)})";
+        return string.Format(CultureInfo.InvariantCulture, "lch({0}% {1} {2})", l, c, h);
     }
 }
