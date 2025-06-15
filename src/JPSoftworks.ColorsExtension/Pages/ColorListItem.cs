@@ -29,6 +29,10 @@ internal sealed partial class ColorListItem : ListItem
         this.Icon = iconStream == null ? null : IconInfo.FromStream(iconStream);
         this.MoreCommands =
         [
+            new CommandContextItem(new AddToFavoritesCommand(this.Title, color.ToRgbColor()))
+            {
+                RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B, 0)
+            },
             new CommandContextItem(new CopyAndSaveColorCommand(this.Title, color) { Name = "Copy " + this.Title})
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C, 0)

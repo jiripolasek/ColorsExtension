@@ -92,11 +92,12 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
 
             var colorResults = combinedParserResult.Strategy switch
             {
-                CombinedParseStrategy.ExactMatch => await this.SingleColorResults(combinedParserResult.ExactResult!.Color!),
+                CombinedParseStrategy.ExactMatch => await this.SingleColorResults(combinedParserResult.ExactResult!.Color!, searchText),
                 CombinedParseStrategy.AutoSelectNamed => await this.SingleColorResults(new Unicolour(ColourSpace.Rgb255,
                     combinedParserResult.NamedResult!.BestMatch!.Rgb!.Value.R,
                     combinedParserResult.NamedResult.BestMatch.Rgb.Value.G,
-                    combinedParserResult.NamedResult.BestMatch.Rgb.Value.B)),
+                    combinedParserResult.NamedResult.BestMatch.Rgb.Value.B),
+                    searchText),
                 CombinedParseStrategy.ShowNamedOptions => this.SelectColorResults(combinedParserResult.NamedResult!.AllMatches),
                 _ => this.NoMatchResults(queryParserResult)
             };
@@ -159,7 +160,7 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
         ];
     }
 
-    private async ValueTask<IListItem[]> SingleColorResults(Unicolour color)
+    private async ValueTask<IListItem[]> SingleColorResults(Unicolour color, string input)
     {
         return
         [
@@ -174,7 +175,10 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
             await ColorListItem.CreateAsync(color, ParsedColorFormat.LabModern),
 
             // gradients
-            .. await BuildBasicGradientAsync(color)
+            .. await BuildBasicGradientAsync(color),
+
+            // commands
+            new ListItem(new AddToFavoritesCommand(input, color.ToRgbColor())),
         ];
     }
 
