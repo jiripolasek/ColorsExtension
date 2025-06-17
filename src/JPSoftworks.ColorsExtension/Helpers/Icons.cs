@@ -29,6 +29,10 @@ internal static class Icons
 
     internal static IconInfo Delete { get; } = new("\uE711");
 
+    internal static IconInfo Copy { get; } = new("\uE8C8");
+
+    internal static IconInfo ReturnKey { get; } = new("\ue751");
+
     [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
     internal static class Colorful
     {

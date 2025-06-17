@@ -21,7 +21,7 @@ internal sealed partial class UpdateSearchTextCommand : InvokableCommand
         this._searchText = searchText;
         this._target = target;
 
-        this.Icon = Icons.Colorful.Edit;
+        this.Icon = Icons.ReturnKey;
     }
     public override ICommandResult Invoke(object? sender)
     {

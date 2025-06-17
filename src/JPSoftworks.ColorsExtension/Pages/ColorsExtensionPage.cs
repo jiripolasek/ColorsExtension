@@ -197,10 +197,10 @@ internal sealed partial class ColorsExtensionPage : AsyncDynamicListPage
         return colorListItems;
     }
 
-    private static async Task<ColorListItem[]> BuildBasicGradientAsync(Unicolour baseColor)
+    private async Task<ColorListItem[]> BuildBasicGradientAsync(Unicolour baseColor)
     {
         return await Task.WhenAll(baseColor.GenerateShadesWithValue()
-            .Select(static color => ColorListItem.CreateAsync(color.Shade, color.Shade.Hex, GetBrightnessDescription(color.ValueChange), 10))
+            .Select(color => ColorListItem.CreateAsync(color.Shade, color.Shade.Hex, GetBrightnessDescription(color.ValueChange), 10, this))
             .ToArray());
 
         static string GetBrightnessDescription(double relativeBrightness)

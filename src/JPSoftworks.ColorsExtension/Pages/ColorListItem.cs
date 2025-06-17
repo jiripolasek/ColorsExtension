@@ -23,7 +23,7 @@ internal sealed partial class ColorListItem : ListItem
         new NoOpCommand())
     {
         this.Title = Formatter.Format(color, format);
-        this.Command = new CopyAndSaveColorCommand(this.Title, color) { Name = "Copy " + this.Title };
+        this.Command = new CopyAndSaveColorCommand(this.Title, color);
         this.Tags = [new Tag(ColorFormatNames.GetDisplayName(format))];
         this.Subtitle = ColorFormatNames.GetDisplayName(format);
         this.Icon = iconStream == null ? null : IconInfo.FromStream(iconStream);
@@ -33,14 +33,14 @@ internal sealed partial class ColorListItem : ListItem
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(true, false, false, false, (int)VirtualKey.B)
             },
-            new CommandContextItem(new CopyAndSaveColorCommand(this.Title, color) { Name = "Copy " + this.Title})
+            new CommandContextItem(new CopyAndSaveColorCommand(this.Title, color))
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C)
             }
         ];
     }
 
-    private ColorListItem(Unicolour color, string text, string? subtitle, IRandomAccessStream? iconStream) : base(
+    private ColorListItem(Unicolour color, string text, string? subtitle, IRandomAccessStream? iconStream, bool allowSelect = false, IDynamicListPage? targetPage = null) : base(
         new CopyAndSaveColorCommand(text, color))
     {
         this.Title = text;
@@ -49,11 +49,12 @@ internal sealed partial class ColorListItem : ListItem
 
         this.MoreCommands =
         [
+            ..(allowSelect && targetPage != null ? new[] {new CommandContextItem(new UpdateSearchTextCommand(this.Title, targetPage) { Name = "Show detail" })} : []),
             new CommandContextItem(new AddToFavoritesCommand(text, color.ToRgbColor())),
             new CommandContextItem(new CopyAndSaveColorCommand(text, color))
             {
                 RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, true, false, (int)VirtualKey.C)
-            }
+            },
         ];
     }
 
@@ -61,11 +62,12 @@ internal sealed partial class ColorListItem : ListItem
         Unicolour color,
         string title,
         string? subtitle = null,
-        int r = 4)
+        int r = 4,
+        IDynamicListPage? targetForUpdate = null)
     {
         var stream = await BitmapStreamFactory.CreateRoundedColorStreamAsync((byte)color.Rgb.Byte255.R,
             (byte)color.Rgb.Byte255.G, (byte)color.Rgb.Byte255.B, 20, r);
-        return new ColorListItem(color, title, subtitle, stream);
+        return new ColorListItem(color, title, subtitle, stream, targetForUpdate != null, targetForUpdate);
     }
 
     public static async Task<ColorListItem> CreateAsync(Unicolour color, ParsedColorFormat format, int r = 4)
