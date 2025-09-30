@@ -16,7 +16,7 @@
     <PackageVersion Include="Shmuelie.WinRTServer" Version="2.2.1" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.Text.Json" Version="9.0.9" />
-    <PackageVersion Include="Wacton.Unicolour" Version="6.0.0" />
+    <PackageVersion Include="Wacton.Unicolour" Version="6.2.0" />
     <PackageVersion Include="Win2D.uwp" Version="1.28.2" />
   </ItemGroup>
 </Project>
