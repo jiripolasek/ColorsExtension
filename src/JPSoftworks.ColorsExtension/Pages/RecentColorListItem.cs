@@ -15,11 +15,11 @@ namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class RecentColorListItem : ListItem
 {
-    private readonly DynamicListPage _listPage;
+    private readonly IDynamicListPage _listPage;
     private readonly RgbColor _rgbColor;
     private readonly string _query;
 
-    public RecentColorListItem(DynamicListPage listPage, string? query, string? value, RgbColor rgbColor)
+    public RecentColorListItem(IDynamicListPage listPage, string? query, string? value, RgbColor rgbColor)
     {
         ArgumentNullException.ThrowIfNull(listPage);
 

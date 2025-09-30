@@ -14,10 +14,10 @@ namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class SelectColorListItem : ListItem
 {
-    private readonly DynamicListPage _listPage;
+    private readonly IDynamicListPage _listPage;
     private readonly string _query;
 
-    public SelectColorListItem(DynamicListPage listPage, NamedColorResult colorResult)
+    public SelectColorListItem(IDynamicListPage listPage, NamedColorResult colorResult)
     {
         ArgumentNullException.ThrowIfNull(listPage);
         ArgumentNullException.ThrowIfNull(colorResult);

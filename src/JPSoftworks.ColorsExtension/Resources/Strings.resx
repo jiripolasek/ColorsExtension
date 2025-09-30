@@ -138,4 +138,7 @@
   <data name="Command_ShowHelp_Name" xml:space="preserve">
     <value>Show help</value>
   </data>
+  <data name="MatchColorFallbackItem_DisplayTitle" xml:space="preserve">
+    <value>Search for color using name or code</value>
+  </data>
 </root>

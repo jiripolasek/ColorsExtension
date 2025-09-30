@@ -38,7 +38,7 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
         ];
         this._fallbackCommands =
         [
-            new TopLevelColorFallbackItem("")
+            new TopLevelColorFallbackItem(Strings.MatchColorFallbackItem_DisplayTitle!)
         ];
     }
 

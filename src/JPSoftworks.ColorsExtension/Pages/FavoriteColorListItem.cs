@@ -15,10 +15,10 @@ namespace JPSoftworks.ColorsExtension.Pages;
 
 internal sealed partial class FavoriteColorListItem : ListItem
 {
-    private readonly DynamicListPage _listPage;
+    private readonly IDynamicListPage _listPage;
     private readonly ColorListEntryModel _favoriteColorEntry;
 
-    public FavoriteColorListItem(DynamicListPage listPage, ColorListEntryModel favoriteColorEntry)
+    public FavoriteColorListItem(IDynamicListPage listPage, ColorListEntryModel favoriteColorEntry)
     {
         ArgumentNullException.ThrowIfNull(listPage);
 

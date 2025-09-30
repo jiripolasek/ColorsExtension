@@ -9,7 +9,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
-internal abstract class AsyncDynamicListPage : DynamicListPage, IDisposable
+internal abstract class AsyncDynamicListPage : ListPage, IDynamicListPage, IDisposable
 {
     private const int DebounceDelayMs = 300;
     private readonly Lock _itemsLock = new();
@@ -23,6 +23,17 @@ internal abstract class AsyncDynamicListPage : DynamicListPage, IDisposable
 
     private string _lastSearchText = "";
     private CancellationTokenSource _updateCancellationSource = new();
+    
+    public override string SearchText
+    {
+        get => base.SearchText;
+        set
+        {
+            var oldSearch = base.SearchText;
+            base.SearchText = value;
+            this.UpdateSearchText(oldSearch, value);
+        }
+    }
 
     protected AsyncDynamicListPage()
     {
@@ -60,7 +71,7 @@ internal abstract class AsyncDynamicListPage : DynamicListPage, IDisposable
         }
     }
 
-    public override void UpdateSearchText(string oldSearch, string newSearch)
+    protected virtual void UpdateSearchText(string oldSearch, string newSearch)
     {
         lock (this._searchLock)
         {
