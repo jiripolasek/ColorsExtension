@@ -26,7 +26,7 @@ internal sealed class FavoritesColorsManager
             try
             {
                 var json = File.ReadAllText(this.FilePath);
-                var model = JsonSerializer.Deserialize<FavoriteColors>(json, FavoritesSourceGenerationContext.Default.Options) ?? new FavoriteColors([]);
+                var model = JsonSerializer.Deserialize<FavoriteColors>(json, FavoritesSourceGenerationContext.Default.FavoriteColors) ?? new FavoriteColors([]);
                 this._model = Repair(model);
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ internal sealed class FavoritesColorsManager
     {
         try
         {
-            var json = JsonSerializer.Serialize(this._model, FavoritesSourceGenerationContext.Default.Options);
+            var json = JsonSerializer.Serialize(this._model, FavoritesSourceGenerationContext.Default.FavoriteColors);
             File.WriteAllText(this.FilePath, json);
         }
         catch (Exception ex)

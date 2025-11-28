@@ -11,7 +11,7 @@ using Windows.Storage.Streams;
 
 namespace JPSoftworks.ColorsExtension.Pages;
 
-internal sealed partial class TopLevelColorFallbackItem : FallbackCommandItem
+internal sealed partial class TopLevelColorFallbackItem : FallbackCommandItem, IDisposable
 {
     private readonly ColorsExtensionPage _page;
     private Task<IRandomAccessStream?>? _currentTaskCreateColorSwatch;
@@ -20,7 +20,7 @@ internal sealed partial class TopLevelColorFallbackItem : FallbackCommandItem
 
     public TopLevelColorFallbackItem(string displayTitle) : base(new NoOpCommand(), displayTitle)
     {
-        // Lets create a new extension page so we can manipulate its name without affecting the top level one.
+        // Let's create a new extension page so we can manipulate its name without affecting the top level one.
         this._page = new ColorsExtensionPage();
         this.Command = this._page;
         this.SetEmpty();
@@ -102,8 +102,7 @@ internal sealed partial class TopLevelColorFallbackItem : FallbackCommandItem
 
     private async Task SetIconAsync(RgbColor rgbColor)
     {
-        var taskCreateColorSwatch
-            = BitmapStreamFactory.CreateRoundedColorStreamAsync(rgbColor.R, rgbColor.G, rgbColor.B);
+        var taskCreateColorSwatch = BitmapStreamFactory.CreateRoundedColorStreamAsync(rgbColor.R, rgbColor.G, rgbColor.B);
         this._currentTaskCreateColorSwatch = taskCreateColorSwatch;
         IRandomAccessStream? iconStream = await taskCreateColorSwatch;
         if (this._currentTaskCreateColorSwatch == taskCreateColorSwatch)
@@ -121,5 +120,11 @@ internal sealed partial class TopLevelColorFallbackItem : FallbackCommandItem
         this.MoreCommands = [];
         this.Icon = null;
         this._lastColor = null;
+    }
+
+    public void Dispose()
+    {
+        this._page.Dispose();
+        this._currentTaskCreateColorSwatch?.Dispose();
     }
 }

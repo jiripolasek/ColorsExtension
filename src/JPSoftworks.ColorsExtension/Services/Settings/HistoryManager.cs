@@ -30,7 +30,7 @@ internal sealed class HistoryManager
             try
             {
                 var json = File.ReadAllText(this.FilePath);
-                this._model = JsonSerializer.Deserialize<HistoryModel>(json, HistorySourceGenerationContext.Default.Options) ?? new HistoryModel([]);
+                this._model = JsonSerializer.Deserialize<HistoryModel>(json, HistorySourceGenerationContext.Default.HistoryModel) ?? new HistoryModel([]);
             }
             catch (Exception ex)
             {
@@ -44,7 +44,7 @@ internal sealed class HistoryManager
     {
         try
         {
-            var json = JsonSerializer.Serialize(this._model, HistorySourceGenerationContext.Default.Options);
+            var json = JsonSerializer.Serialize(this._model, HistorySourceGenerationContext.Default.HistoryModel);
             File.WriteAllText(this.FilePath, json);
         }
         catch (Exception ex)

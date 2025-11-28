@@ -26,6 +26,7 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
         this.Settings = this._settingsManager.Settings;
 
         var colorsExtensionPage = new ColorsExtensionPage();
+
         this._commands =
         [
             new CommandItem(colorsExtensionPage) {
@@ -36,6 +37,7 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
                     new CommandContextItem(new HelpPage())
                 ]}
         ];
+
         this._fallbackCommands =
         [
             new TopLevelColorFallbackItem(Strings.MatchColorFallbackItem_DisplayTitle!)
@@ -50,5 +52,20 @@ public sealed partial class ColorsExtensionCommandsProvider : CommandProvider
     public override IFallbackCommandItem[] FallbackCommands()
     {
         return this._fallbackCommands;
+    }
+
+    public override void Dispose()
+    {
+        foreach (var commandItem in this._commands)
+        {
+            (commandItem as IDisposable)?.Dispose();
+        }
+
+        foreach (var fallbackCommand in this._fallbackCommands)
+        {
+            (fallbackCommand as IDisposable)?.Dispose();
+        }
+
+        base.Dispose();
     }
 }
